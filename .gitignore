@@ -7,10 +7,11 @@
 *.user
 *.sln
 *.suo
-
+.vs/
 # Ignore compiled files
 *.o
 *.dll
 *.so
+*.a
 *.dylib
 *.exe
