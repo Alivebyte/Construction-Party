@@ -1,0 +1,16 @@
+# Ignore build directories
+/build/
+/bin/
+/obj/
+
+# Ignore user-specific files
+*.user
+*.sln
+*.suo
+
+# Ignore compiled files
+*.o
+*.dll
+*.so
+*.dylib
+*.exe
