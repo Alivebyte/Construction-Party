@@ -4,3 +4,6 @@
 [submodule "external/tracy"]
 	path = external/tracy
 	url = https://github.com/wolfpld/tracy.git
+[submodule "external/ozz-animation"]
+	path = external/ozz-animation
+	url = https://github.com/guillaumeblanc/ozz-animation
