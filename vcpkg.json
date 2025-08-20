@@ -1,6 +1,6 @@
 {
   "name": "jam2025",
-  "version": "0.0.1"
+  "version": "0.0.1",
   "features":
   {
 	  "engine":
@@ -9,11 +9,17 @@
 		  "dependencies": [
 			{ "name": "sdl2", "version>=": "2.32.8" },
 			{ "name": "sdl2-net", "version>=": "2.2.0" },
-			{ "name": "stb", "version>=": "2024-07-29" },
-			{ "name": "assimp", "version": "6.0.2" },
-			{ "name": "miniaudio", "version": "0.11.22" },
+			{ "name": "stb", "version>=": "2024-07-29#1" },
+			{ "name": "assimp", "version>=": "6.0.2" },
+			{ "name": "miniaudio", "version>=": "0.11.22" }
+		  ]
+	  },
+	  "client":
+	  {
+		  "description": "Client library",
+		  "dependencies": [
 			{ "name": "imgui", "version>=": "1.91.9" }
-		  ],
+		  ]
 	  }
   }
   

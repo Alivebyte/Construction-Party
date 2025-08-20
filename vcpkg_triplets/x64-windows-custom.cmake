@@ -1,0 +1,7 @@
+set(VCPKG_TARGET_ARCHITECTURE x64)
+set(VCPKG_CRT_LINKAGE static)
+set(VCPKG_LIBRARY_LINKAGE static)
+if(PORT MATCHES "sdl2" OR PORT MATCHES "sdl2-net")
+	set(VCPKG_LIBRARY_LINKAGE dynamic)
+	set(VCPKG_CRT_LINKAGE dynamic)
+endif 
