@@ -1,0 +1,1 @@
+extern "C" int __declspec(dllexport) Engine_Main(int argc, char* argv);

@@ -82,7 +82,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     ret = App_Start();
     
-    return App_Start();
+    return ret;
 }
 
 
