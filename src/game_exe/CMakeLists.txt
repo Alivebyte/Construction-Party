@@ -6,4 +6,4 @@ list(APPEND EXE_SOURCES
    "main.cpp"
 )
 
-add_executable(game ${EXE_SOURCES})
+add_executable(game WIN32 ${EXE_SOURCES})
