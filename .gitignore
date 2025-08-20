@@ -3,6 +3,9 @@ build/
 /bin/
 /obj/
 
+# Ignore CMake user presets
+CMakeUserPresets.json
+
 # Ignore user-specific files
 *.user
 *.sln

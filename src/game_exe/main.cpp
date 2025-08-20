@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+typedef void (*pfnMain)(int argc, char* argv);
+
 #define LIB_DIR "bin/"
 
 #if defined(WIN32)
@@ -16,6 +18,8 @@ void App_LoadEngine();
 void App_Shutdown();
 
 static HINSTANCE hEngineDll;
+
+static pfnMain Engine_Main;
 
 static void Exe_Error(const char *szFmt, ...)
 {
@@ -50,6 +54,11 @@ int App_Start()
 {
     App_LoadEngine();
 
+    if (Engine_Main)
+    {
+        Engine_Main(1, ""); // TODO: Proper arguments
+    }
+
     return 0;
 }
 
@@ -64,6 +73,11 @@ void App_LoadEngine()
     if (!hEngineDll)
         Exe_Error("Couldn't load engine.dll!\n%s", GetErrorString());
 
+    Engine_Main = (pfnMain)GetProcAddress(hEngineDll, "Engine_Main");
+    if (!Engine_Main)
+    {
+        Exe_Error(LIB_ENGINE " doesn't have exported Engine_Main.\n%s", GetErrorString());
+    }
     
 }
 
