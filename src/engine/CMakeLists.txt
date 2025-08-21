@@ -7,6 +7,10 @@ list(APPEND ENGINE_SOURCES
 	engine.cpp
 	engine_main.h 
 	engine_main.cpp
+	# File system
+	ifilesystem.h
+	filesystem.h
+	filesystem.cpp
 )
 add_library(${PROJECT_NAME} SHARED ${ENGINE_SOURCES})
 

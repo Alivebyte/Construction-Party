@@ -1,3 +1,6 @@
+#ifndef IENGINE_H
+#define IENGINE_H
+
 class IEngine
 {
 public:
@@ -6,3 +9,5 @@ public:
 	virtual void Loop() = 0;
 	virtual void Shutdown() = 0;
 };
+
+#endif

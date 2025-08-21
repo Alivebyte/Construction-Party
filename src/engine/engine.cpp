@@ -1,8 +1,11 @@
 #include "engine.h"
+#include "ifilesystem.h"
 #include <stdio.h>
 
 void Engine::Init()
 {
+	GetFileSystem()->Init();
+	
 	printf("Engine started!\n");
 	printf("Starting engine loop.\n");
 
@@ -25,5 +28,7 @@ void Engine::Loop()
 void Engine::Shutdown()
 {
 	// TODO: Actually shutdown
+	
+	GetFileSystem()->Shutdown();
 }
 
