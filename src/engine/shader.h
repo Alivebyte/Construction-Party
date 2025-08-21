@@ -92,6 +92,8 @@ public:
 
 	bool HasUniform(ShaderUniform_t uniform) { return m_glUniformLocation[uniform] != -1; }
 
+	const std::string& GetName() const { return m_name; }
+
 private:
 	// TEMP SOLUTION
 	ShaderUniformDesc_t m_uniformDesc[SHADERUNIFORM_MAX_COUNT];

@@ -74,12 +74,10 @@ void ShaderSystem::Shutdown()
 {
 	for (int i = 0; i < m_shaders.size(); i++)
 	{
-		ShaderData& shaderData = m_shaders[i];
-
-		if (shaderData.shader)
+		if (m_shaders[i])
 		{
-			delete shaderData.shader;
-			shaderData.shader = nullptr;
+			delete m_shaders[i];
+			m_shaders[i] = nullptr;
 		}
 	}
 
@@ -88,10 +86,10 @@ void ShaderSystem::Shutdown()
 
 Shader* ShaderSystem::CreateShader(const char* name, const char* vsfilepath, const char* psfilepath, InputLayoutDesc_t* inputLayout /*= nullptr*/, int inputLayoutCount/* = 0*/)
 {
-	auto it = std::find_if(m_shaders.begin(), m_shaders.end(), [=](const ShaderData& shaderData) { return shaderData.shadername == name; });
+	auto it = std::find_if(m_shaders.begin(), m_shaders.end(), [=](const Shader* shader) { return shader->GetName() == name; });
 	if ( it != m_shaders.end() )
 	{
-		return it->shader;
+		return *it;
 	}
 
 	Shader* pShader = new Shader();
@@ -104,8 +102,7 @@ Shader* ShaderSystem::CreateShader(const char* name, const char* vsfilepath, con
 
 	pShader->Create( name, vsfilepath, psfilepath );
 
-	ShaderData shaderData = { name, pShader };
-	m_shaders.push_back(shaderData);
+	m_shaders.push_back(pShader);
 
 	return pShader;
 }

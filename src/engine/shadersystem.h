@@ -24,13 +24,7 @@ public:
 	void SetUniformMatrix( const Shader* shader, ShaderUniform_t uniform, const void* data );
 
 private:
-	struct ShaderData
-	{
-		std::string shadername;
-		Shader* shader;
-	};
-
-	std::vector<ShaderData> m_shaders;
+	std::vector<Shader*> m_shaders;
 };
 
 extern ShaderSystem* g_pShaderSystem;
