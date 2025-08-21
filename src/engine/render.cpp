@@ -2,6 +2,7 @@
 #include "render.h"
 #include "renderdevice.h"
 #include "shadersystem.h"
+#include "modelsystem.h"
 
 static GLuint g_VAO = 0;
 
@@ -55,8 +56,11 @@ void Render::Init(SDL_Window* pWindow)
 	g_pShaderSystem = new ShaderSystem();
 	g_pShaderSystem->Init();
 
+	// Create model system
+	g_pModelSystem = new ModelSystem();
+
 	// Create stretched picture buffer
-	//m_pStretchedPicVBuf = g_pRenderDevice->CreateVertexBuffer(nullptr, MAX_STRETCH_VX, true);
+	m_pStretchedPicVBuf = g_pRenderDevice->CreateVertexBuffer(nullptr, MAX_STRETCH_VX, true);
 
 	// Core profile require Vertex Array Object to render
 	if (m_bUsingVAO)
@@ -77,6 +81,10 @@ void Render::Shutdown()
 
 	delete m_pStretchedPicVBuf;
 	m_pStretchedPicVBuf = nullptr;
+
+	g_pModelSystem->Shutdown();
+	delete g_pModelSystem;
+	g_pModelSystem = nullptr;
 
 	g_pShaderSystem->Shutdown();
 	delete g_pShaderSystem;

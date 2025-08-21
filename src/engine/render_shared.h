@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 
+#include <glm/glm.hpp>
+
 typedef uint32_t index_t;
 
 enum BufferType
@@ -122,13 +124,13 @@ struct View
 };
 
 // Stretched picture vertex
-//struct StretchedVertex
-//{
-//	glm::vec2 position;
-//	glm::vec2 texcoord;
-//	glm::vec4 color;
-//};
-//
-//#define MAX_STRETCH_VX 12 * sizeof(StretchedVertex)
+struct StretchedVertex
+{
+	glm::vec3 position;
+	glm::vec2 texcoord;
+	glm::vec4 color;
+};
+
+#define MAX_STRETCH_VX 12 * sizeof(StretchedVertex)
 
 #endif

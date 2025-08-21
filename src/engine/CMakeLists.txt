@@ -33,6 +33,8 @@ list(APPEND ENGINE_SOURCES
 	shader.cpp
 	shadersystem.h
 	shadersystem.cpp
+	modelsystem.h
+	modelsystem.cpp
 )
 add_library(${PROJECT_NAME} SHARED ${ENGINE_SOURCES})
 
