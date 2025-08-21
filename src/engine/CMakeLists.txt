@@ -13,6 +13,9 @@ list(APPEND ENGINE_SOURCES
 	engine.cpp
 	engine_main.h 
 	engine_main.cpp
+	# Server (Entity Model)
+	entity.h
+	entity.cpp
 	# File system
 	ifilesystem.h
 	filesystem.h
