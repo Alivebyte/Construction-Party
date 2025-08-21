@@ -72,7 +72,7 @@ void Engine::Loop()
 	}
 
 	// Rendering
-	if (s_bIsDedicated)
+	if (!s_bIsDedicated)
 	{
 		int windowSizeX = 0, windowSizeY = 0;
 		SDL_GetWindowSize(m_pWindow, &windowSizeX, &windowSizeY);
