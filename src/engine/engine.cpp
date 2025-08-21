@@ -3,11 +3,17 @@
 #include "ilogger.h"
 #include "render.h"
 #include "renderdevice.h"
+#include "gpu_buffer.h"
+#include "shader.h"
+#include "shadersystem.h"
 #include <stdio.h>
 
 #define WINDOW_TITLE "TBN"
 
 static bool s_bIsDedicated = false;
+
+static GPUBuffer* s_pTriangleBuffer = nullptr;
+static Shader* s_pShader = nullptr;
 
 void Engine::Init()
 {
@@ -33,6 +39,26 @@ void Engine::Init()
 	{
 		g_pRender = new Render();
 		g_pRender->Init(m_pWindow);
+
+		// Create vertex buffer
+
+		float vertices[] = {
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		};
+
+		s_pTriangleBuffer = g_pRenderDevice->CreateVertexBuffer(vertices, sizeof(vertices));
+
+		// Create shader
+	
+		static InputLayoutDesc_t inputLayout[] =
+		{
+			{ VERTEXATTR_VEC3, SHADERSEMANTIC_POSITION },
+			{ VERTEXATTR_VEC4, SHADERSEMANTIC_COLOR },
+		};
+
+		s_pShader = g_pShaderSystem->CreateShader("test", "data/test.vs", "data/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
 	}
 
 	GetLogger()->Print("Engine started!\n");
@@ -82,6 +108,11 @@ void Engine::Loop()
 
 		// Clear screen
 		g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
+
+		// Draw triangle
+		g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
+		g_pShaderSystem->SetShader(s_pShader);
+		g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, 3);
 
 		// Present the backbuffer to screen
 		g_pRender->Present();

@@ -43,7 +43,6 @@ GLuint CreateShader(GLenum shaderType, const char* filename)
 }
 
 Shader::Shader() :
-	m_name(nullptr),
 	m_stride(0),
 	m_layoutCount(0)
 {
