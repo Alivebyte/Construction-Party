@@ -3,6 +3,7 @@
 
 #include "iengine.h"
 
+#include <SDL.h>
 
 class Engine : public IEngine
 {
@@ -11,6 +12,10 @@ public:
 	void RunLoop() override;
 	void Loop() override;
 	void Shutdown() override;
+
+private:
+	SDL_Window* m_pWindow = nullptr;
+	bool m_bExit = false;
 };
 
 #endif

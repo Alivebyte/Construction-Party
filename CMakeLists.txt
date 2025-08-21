@@ -31,6 +31,7 @@ if(BUILD_DEDICATED)
 endif()
 
 if(BUILD_ENGINE)
+	add_subdirectory(external/glad)
     add_subdirectory(src/engine)
 endif()
 

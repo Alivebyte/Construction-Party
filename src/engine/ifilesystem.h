@@ -1,6 +1,8 @@
 #ifndef IFILESYSTEM_H
 #define IFILESYSTEM_H
 
+#define INVALID_FILE_HANDLE_VALUE -1
+
 // File handle type
 typedef int FileHandle_t;
 
