@@ -67,8 +67,7 @@ void TexturesManager::Init()
 
 	m_notex = LoadTexture2D("data/textures/notex.png", true);
 	if (!m_notex) {
-		GetLogger()->Print("TexturesManager::Init: Failed to initialize system texture! 'system/notex.png' is not exist.");
-		SDL_assert(0);
+		GetLogger()->Error("TexturesManager::Init: Failed to initialize system texture! 'system/notex.png' is not exist.");
 	}
 }
 

@@ -30,8 +30,7 @@ void Engine::Init()
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
-		GetLogger()->Print("Failed to intiailize SDL2. Error: %s", SDL_GetError());
-		SDL_assert_always(0);
+		GetLogger()->Error("Failed to intiailize SDL2. Error: %s", SDL_GetError());
 	}
 
 	// Enable core profile for compability for new hardware

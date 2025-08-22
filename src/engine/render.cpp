@@ -34,8 +34,7 @@ void Render::Init(SDL_Window* pWindow)
 
 	if (GLVersion.major == 0 || GLVersion.minor == 0)
 	{
-		GetLogger()->Print("Failed to load OpenGL");
-		SDL_assert(0);
+		GetLogger()->Error("Failed to load OpenGL");
 	}
 
 	// Core profile probably, should use VAO

@@ -10,6 +10,7 @@ public:
 	virtual void Shutdown() = 0;
 
 	virtual void Print(const char* message, ...) = 0;
+	virtual void Error(const char* message, ...) = 0;
 };
 
 extern "C" __declspec(dllexport) ILogger* GetLogger();
