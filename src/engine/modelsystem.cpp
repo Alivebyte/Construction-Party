@@ -304,7 +304,7 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 {
 	if (!g_litShader)
 	{
-		g_litShader = g_pShaderSystem->CreateShader("lit_generic", "data/lit_generic.vs", "data/lit_generic.ps",
+		g_litShader = g_pShaderSystem->CreateShader("lit_generic", "data/shaders/lit_generic.vs", "data/shaders/lit_generic.ps",
 			g_staticVertexLayout, sizeof(g_staticVertexLayout) / sizeof(g_staticVertexLayout[0]));
 	}
 
@@ -356,6 +356,12 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 	//pos *= 50.0f;
 	//
 	//model = glm::translate(model, pos);
+
+	glm::mat4 mvp = glm::identity<glm::mat4>();
+	mvp = /*g_renderView.proj * g_renderView.view **/ model;
+	g_pShaderSystem->SetUniformMatrix(g_litShader, UNIFORM_MVP_MATRIX, &mvp[0]);
+	
+	g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, m_data.vbcount);
 
 #if 0
 	glm::mat4 mvp = glm::identity<glm::mat4>();

@@ -6,14 +6,18 @@
 #include "gpu_buffer.h"
 #include "shader.h"
 #include "shadersystem.h"
+#include "modelsystem.h"
 #include <stdio.h>
 
 #define WINDOW_TITLE "TBN"
 
 static bool s_bIsDedicated = false;
+static bool s_bCoreProfile = true;
 
 static GPUBuffer* s_pTriangleBuffer = nullptr;
 static Shader* s_pShader = nullptr;
+
+static Model* s_pTestModel = nullptr;
 
 void Engine::Init()
 {
@@ -28,6 +32,17 @@ void Engine::Init()
 	{
 		GetLogger()->Print("Failed to intiailize SDL2. Error: %s", SDL_GetError());
 		SDL_assert_always(0);
+	}
+
+	// Enable core profile for compability for new hardware
+	if (s_bCoreProfile)
+	{
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+		//SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+		//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	}
 
 	// Create render window
@@ -59,6 +74,9 @@ void Engine::Init()
 		};
 
 		s_pShader = g_pShaderSystem->CreateShader("test", "data/shaders/test.vs", "data/shaders/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
+	
+		// Load example model
+		s_pTestModel = g_pModelSystem->LoadModel("data/models/test.obj");
 	}
 
 	GetLogger()->Print("Engine started!\n");
@@ -108,6 +126,11 @@ void Engine::Loop()
 
 		// Clear screen
 		g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
+
+		// Draw model
+		
+		static glm::mat4 identityMatrix = glm::mat4(1.0f);
+		s_pTestModel->Draw(identityMatrix);
 
 		// Draw triangle
 		g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
