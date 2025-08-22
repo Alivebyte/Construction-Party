@@ -58,7 +58,7 @@ void Engine::Init()
 			{ VERTEXATTR_VEC4, SHADERSEMANTIC_COLOR },
 		};
 
-		s_pShader = g_pShaderSystem->CreateShader("test", "data/test.vs", "data/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
+		s_pShader = g_pShaderSystem->CreateShader("test", "data/shaders/test.vs", "data/shaders/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
 	}
 
 	GetLogger()->Print("Engine started!\n");

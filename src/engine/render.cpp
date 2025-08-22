@@ -1,6 +1,7 @@
 #include "ilogger.h"
 #include "render.h"
 #include "renderdevice.h"
+#include "texturesmanager.h"
 #include "shadersystem.h"
 #include "modelsystem.h"
 
@@ -52,6 +53,10 @@ void Render::Init(SDL_Window* pWindow)
 	// Create render device
 	g_pRenderDevice = new RenderDevice();
 
+	// Create texture manager
+	g_pTexturesManager = new TexturesManager();
+	g_pTexturesManager->Init();
+
 	// Create shader system
 	g_pShaderSystem = new ShaderSystem();
 	g_pShaderSystem->Init();
@@ -89,6 +94,10 @@ void Render::Shutdown()
 	g_pShaderSystem->Shutdown();
 	delete g_pShaderSystem;
 	g_pShaderSystem = nullptr;
+
+	g_pTexturesManager->Shutdown();
+	delete g_pTexturesManager;
+	g_pTexturesManager = nullptr;
 
 	delete g_pRenderDevice;
 	g_pRenderDevice = nullptr;

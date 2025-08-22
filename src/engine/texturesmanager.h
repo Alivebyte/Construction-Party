@@ -34,6 +34,6 @@ private:
 	Texture2D* m_notex;
 };
 
-extern TexturesManager* g_texturesManager;
+extern TexturesManager* g_pTexturesManager;
 
 #endif // !TEXTURESMANAGER_H

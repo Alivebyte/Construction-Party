@@ -10,7 +10,7 @@
 static const char* g_texFileExtensions[] = { ".png", ".jpeg", ".jpg", ".tga", ".bmp" };
 const int kTexFileExtensionsSize = sizeof(g_texFileExtensions) / sizeof(g_texFileExtensions[0]);
 
-TexturesManager* g_texturesManager = nullptr;
+TexturesManager* g_pTexturesManager = nullptr;
 
 static std::string getFileExtension(const std::string& filename)
 {
@@ -65,7 +65,7 @@ void TexturesManager::Init()
 {
 	stbi_set_flip_vertically_on_load(true);
 
-	m_notex = LoadTexture2D("content/textures/system/notex.png", true);
+	m_notex = LoadTexture2D("data/textures/notex.png", true);
 	if (!m_notex) {
 		GetLogger()->Print("TexturesManager::Init: Failed to initialize system texture! 'system/notex.png' is not exist.");
 		SDL_assert(0);

@@ -8,6 +8,7 @@
 #include "shadersystem.h"
 #include "renderdevice.h"
 #include "modelsystem.h"
+#include "texturesmanager.h"
 
 ModelSystem* g_pModelSystem = nullptr;
 
@@ -280,7 +281,7 @@ void Model::LoadMtl(const char* filename)
 			fgets(stupidBuffer, 1000, file);
 
 			const char* textureFilename = stupidBuffer + 1;
-			//m_AlbedoTexture = g_texturesManager->LoadTexture2D(textureFilename, true);
+			m_AlbedoTexture = g_pTexturesManager->LoadTexture2D(textureFilename, true);
 		}
 
 		//if (strcmp(lineHeader, "v") == 0) {
@@ -361,7 +362,7 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 	mvp = g_renderView.proj * g_renderView.view * model;
 	g_shaderSystem->SetUniformMatrix(g_litShader, UNIFORM_MVP_MATRIX, &mvp[0]);
 
-	g_texturesManager->SetTexture(0, m_AlbedoTexture);
+	g_pTexturesManager->SetTexture(0, m_AlbedoTexture);
 	g_shaderSystem->SetUniformSampler(g_litShader, SAMPLER_ALBEDO, 0);
 
 	g_renderDevice->DrawArrays(PT_TRIANGLES, 0, m_data.vbcount);
