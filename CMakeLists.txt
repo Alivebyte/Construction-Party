@@ -19,7 +19,7 @@ if(BUILD_CLIENT)
     list(APPEND VCPKG_MANIFEST_FEATURES "client")
 endif()
 
-project(TBN)
+project(Contruction-Party)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin/$<0:>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin/$<0:>")

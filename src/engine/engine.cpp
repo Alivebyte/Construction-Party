@@ -9,7 +9,7 @@
 #include "modelsystem.h"
 #include <stdio.h>
 
-#define WINDOW_TITLE "TBN"
+#define WINDOW_TITLE "Construction Party"
 
 static bool s_bIsDedicated = false;
 static bool s_bCoreProfile = true;
