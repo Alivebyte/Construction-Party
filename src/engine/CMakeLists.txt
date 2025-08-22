@@ -29,6 +29,10 @@ list(APPEND ENGINE_SOURCES
 	render.cpp
 	renderdevice.h
 	renderdevice.cpp
+	texture2d.h
+	texture2d.cpp
+	texturesmanager.h
+	texturesmanager.cpp
 	shader.h
 	shader.cpp
 	shadersystem.h

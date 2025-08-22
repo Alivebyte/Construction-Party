@@ -151,3 +151,39 @@ uint32_t GetGLDepthFunc(DepthFunc func)
 	SDL_assert(0 && "Should be never here");
 	return 0;
 }
+
+int getGlWrap(TextureWrap wrap)
+{
+	int param = 0;
+
+	if (wrap == TextureWrap_Repeat)
+		param = GL_REPEAT;
+	else if (wrap == TextureWrap_MirroredRepeat)
+		param = GL_MIRRORED_REPEAT;
+	else if (wrap == TextureWrap_ClampToEdge)
+		param = GL_CLAMP_TO_EDGE;
+	else if (wrap == TextureWrap_ClampToBorder)
+		param = GL_CLAMP_TO_BORDER;
+
+	return param;
+}
+
+int getGlTexFilter(TextureFilter filter)
+{
+	int param = 0;
+
+	if (filter == TextureFilter_Linear)
+		param = GL_LINEAR;
+	else if (filter == TextureFilter_Nearest)
+		param = GL_NEAREST;
+	else if (filter == TextureFilter_LinearMipmapLinear)
+		param = GL_LINEAR_MIPMAP_LINEAR;
+	else if (filter == TextureFilter_LinearMipmapNearest)
+		param = GL_LINEAR_MIPMAP_NEAREST;
+	else if (filter == TextureFilter_NearestMipmapLinear)
+		param = GL_NEAREST_MIPMAP_LINEAR;
+	else if (filter == TextureFilter_NearestMipmapNearest)
+		param = GL_NEAREST_MIPMAP_NEAREST;
+
+	return param;
+}
