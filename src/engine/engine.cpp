@@ -46,7 +46,7 @@ void Engine::Init()
 
 	// Create render window
 	m_pWindow = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		1024, 768, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+		800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	
 	// Initialize renderer
 	if (!s_bIsDedicated)
