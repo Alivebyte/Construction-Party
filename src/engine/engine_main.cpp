@@ -3,7 +3,7 @@
 
 IEngine* g_Engine = new Engine;
 
-extern "C" int __declspec(dllexport) Engine_Main(int argc, char* argv)
+extern "C" int __declspec(dllexport) Engine_Main(int argc, char** argv)
 {
 	
 	if (g_Engine)

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-typedef void (*pfnMain)(int argc, char* argv);
+typedef void (*pfnMain)(int argc, char** argv);
 
 #define LIB_DIR "bin/"
 
@@ -13,7 +13,7 @@ typedef void (*pfnMain)(int argc, char* argv);
 
 #define LIB_ENGINE_PATH LIB_DIR LIB_ENGINE
 
-int App_Start();
+int App_Start(int argc, char** argv);
 void App_LoadEngine();
 void App_Shutdown();
 
@@ -32,7 +32,7 @@ static void Exe_Error(const char *szFmt, ...)
 #ifdef WIN32
     MessageBoxA(NULL, buffer, "Launcher Error!", MB_OK);
 #else
-    fprintf(stderr, "Launch Error: %s", buffer);
+    fprintf(stderr, "Launcher Error: %s", buffer);
 #endif
 
     exit(1);
@@ -50,13 +50,13 @@ const char* GetErrorString()
 #endif 
 }
 
-int App_Start()
+int App_Start(int argc, char** argv)
 {
     App_LoadEngine();
 
     if (Engine_Main)
     {
-        Engine_Main(1, ""); // TODO: Proper arguments
+        Engine_Main(argc, argv);
     }
 
     return 0;
@@ -92,9 +92,21 @@ int main()
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+    int argc;
+    LPWSTR *lpargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    char** argv = (char**)malloc((argc + 1) * sizeof(char));
+
+    for (int i = 0; i < argc; ++i)
+    {
+        size_t size = wcslen(lpargv[i]) + 1;
+
+        argv[i] = (char*)malloc(size * sizeof(wchar_t));
+        wcstombs(argv[i], lpargv[i], size);
+    }
+
     int ret;
 
-    ret = App_Start();
+    ret = App_Start(argc, argv);
     
     return ret;
 }
