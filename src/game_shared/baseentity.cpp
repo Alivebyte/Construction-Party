@@ -24,7 +24,7 @@ void BaseEntity::Think()
 
 void BaseEntity::SetModel(const char* filename)
 {
-	m_pModel = GetModelAPI()->LoadModel(filename);
+	m_pModel = GetClientGameAPI()->LoadModel(filename);
 }
 
 // useful point entities

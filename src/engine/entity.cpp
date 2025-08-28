@@ -47,6 +47,7 @@ IEntityAPI* GetEntityAPI()
 
 #include "render.h"
 #include "engine.h"
+#include "modelsystem.h"
 
 class ClientGameAPI : public IClientGameAPI
 {
@@ -54,7 +55,13 @@ public:
 	// Inherited via IClientGameAPI
 	void GetMousePos(int* pX, int* pY);
 	void SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz) override;
+	Model* LoadModel(const char* pFilename) override;
 };
+
+Model* ClientGameAPI::LoadModel(const char* pFilename)
+{
+	return g_pModelSystem->LoadModel(pFilename);
+}
 
 void ClientGameAPI::GetMousePos(int* pX, int* pY)
 {
@@ -72,27 +79,5 @@ IClientGameAPI* GetClientGameAPI()
 {
 	static ClientGameAPI clientGameAPI;
 	return &clientGameAPI;
-}
-
-// TEMPORARY HERE: Model API
-
-#include "modelsystem.h"
-
-class ModelAPI : public IModelAPI
-{
-public:
-	// Inherited via IModelAPI
-	Model* LoadModel(const char* pFilename) override;
-};
-
-Model* ModelAPI::LoadModel(const char* pFilename)
-{
-	return g_pModelSystem->LoadModel(pFilename);
-}
-
-IModelAPI* GetModelAPI()
-{
-	static ModelAPI modelAPI;
-	return &modelAPI;
 }
 
