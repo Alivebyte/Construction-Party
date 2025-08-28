@@ -43,3 +43,56 @@ IEntityAPI* GetEntityAPI()
 	return &entityAPI;
 }
 
+// TEMPORARY HERE: Client Game API
+
+#include "render.h"
+#include "engine.h"
+
+class ClientGameAPI : public IClientGameAPI
+{
+public:
+	// Inherited via IClientGameAPI
+	void GetMousePos(int* pX, int* pY);
+	void SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz) override;
+};
+
+void ClientGameAPI::GetMousePos(int* pX, int* pY)
+{
+	if (pX) *pX = g_mousePoxX;
+	if (pY) *pY = g_mousePoxY;
+}
+
+void ClientGameAPI::SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz)
+{
+	g_viewOrigin = glm::vec3(x, y, z);
+	g_viewOrient = glm::vec3(dirx, diry, dirz);
+}
+
+IClientGameAPI* GetClientGameAPI()
+{
+	static ClientGameAPI clientGameAPI;
+	return &clientGameAPI;
+}
+
+// TEMPORARY HERE: Model API
+
+#include "modelsystem.h"
+
+class ModelAPI : public IModelAPI
+{
+public:
+	// Inherited via IModelAPI
+	Model* LoadModel(const char* pFilename) override;
+};
+
+Model* ModelAPI::LoadModel(const char* pFilename)
+{
+	return g_pModelSystem->LoadModel(pFilename);
+}
+
+IModelAPI* GetModelAPI()
+{
+	static ModelAPI modelAPI;
+	return &modelAPI;
+}
+

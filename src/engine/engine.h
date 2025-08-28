@@ -21,4 +21,7 @@ private:
 	bool m_bExit = false;
 };
 
+extern int g_mousePoxX;
+extern int g_mousePoxY;
+
 #endif

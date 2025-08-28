@@ -7,6 +7,10 @@
 
 static GLuint g_VAO = 0;
 
+// TEMP
+glm::vec3 g_viewOrigin;
+glm::vec3 g_viewOrient;
+
 Render* g_pRender = nullptr;
 
 Render::Render() :

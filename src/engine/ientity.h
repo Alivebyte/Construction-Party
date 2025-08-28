@@ -31,6 +31,16 @@ public:
 
 extern "C" __declspec(dllexport) IModelAPI* GetModelAPI();
 
+class IClientGameAPI
+{
+public:
+	virtual void GetMousePos(int* pX, int* pY) = 0;
+
+	virtual void SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz) = 0;
+};
+
+extern "C" __declspec(dllexport) IClientGameAPI* GetClientGameAPI();
+
 class IServerGame
 {
 public:

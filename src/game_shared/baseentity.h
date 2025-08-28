@@ -18,9 +18,12 @@ public:
 	virtual void Spawn();
 	virtual void Think();
 
+	void SetModel(const char* filename);
+
 private:
 	glm::vec3 m_Origin;
 	glm::quat m_Orient;
+	Model* m_pModel;
 };
 
 // Entity registration

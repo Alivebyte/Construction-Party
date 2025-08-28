@@ -21,6 +21,9 @@ static Model* s_pTestModel = nullptr;
 
 static IServerGame* g_pServerGame = nullptr;
 
+int g_mousePoxX = 0;
+int g_mousePoxY = 0;
+
 void Engine::Init()
 {
 	// Initialize logger
@@ -122,6 +125,9 @@ void Engine::Loop()
 			}
 		}
 	}
+
+	// Event Update
+	SDL_GetMouseState(&g_mousePoxX, &g_mousePoxY);
 
 	// Rendering
 	if (!s_bIsDedicated)

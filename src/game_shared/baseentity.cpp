@@ -5,7 +5,8 @@ REGISTER_ENTITY(BaseEntity, "entity");
 
 BaseEntity::BaseEntity() :
 	m_Origin(0.0f),
-	m_Orient(glm::identity<glm::quat>())
+	m_Orient(glm::identity<glm::quat>()),
+	m_pModel(nullptr)
 {
 }
 
@@ -21,6 +22,10 @@ void BaseEntity::Think()
 {
 }
 
+void BaseEntity::SetModel(const char* filename)
+{
+	m_pModel = GetModelAPI()->LoadModel(filename);
+}
 
 // useful point entities
 
@@ -31,6 +36,8 @@ public:
 	~InfoPlayerStart();
 };
 
+REGISTER_ENTITY(InfoPlayerStart, "info_player_start");
+
 InfoPlayerStart::InfoPlayerStart()
 {
 }
@@ -38,8 +45,6 @@ InfoPlayerStart::InfoPlayerStart()
 InfoPlayerStart::~InfoPlayerStart()
 {
 }
-
-REGISTER_ENTITY(InfoPlayerStart, "info_player_start");
 
 // Entity Registrator
 

@@ -28,4 +28,8 @@ private:
 
 extern Render* g_pRender;
 
+// TEMP
+extern glm::vec3 g_viewOrigin;
+extern glm::vec3 g_viewOrient;
+
 #endif // !RENDER_H
