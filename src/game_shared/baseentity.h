@@ -38,8 +38,8 @@ public:
 };
 
 #define REGISTER_ENTITY(CLASSNAME, NAME) \
-	static BaseEntity* Create_##NAME##_Private() { return new NAME(); } \
-	static EntityRegistrationInfo s_##CLASSNAME##RegisterInfo = { &Create_##NAME##_Private, NAME }; \
+	static IEntity* Create_##CLASSNAME##_Private() { return new CLASSNAME(); } \
+	static EntityRegistrationInfo s_##CLASSNAME##RegisterInfo = { &Create_##CLASSNAME##_Private, NAME }; \
 	static EntityRegistrator s_##CLASSNAME##Registrator(s_##CLASSNAME##RegisterInfo)
 
 #endif // !BASEENTITY_H

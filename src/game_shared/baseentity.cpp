@@ -1,6 +1,11 @@
 #include "baseentity.h"
 
-BaseEntity::BaseEntity()
+// Register base entity
+REGISTER_ENTITY(BaseEntity, "entity");
+
+BaseEntity::BaseEntity() :
+	m_Origin(0.0f),
+	m_Orient(glm::identity<glm::quat>())
 {
 }
 
@@ -15,6 +20,26 @@ void BaseEntity::Spawn()
 void BaseEntity::Think()
 {
 }
+
+
+// useful point entities
+
+class InfoPlayerStart : public BaseEntity
+{
+public:
+	InfoPlayerStart();
+	~InfoPlayerStart();
+};
+
+InfoPlayerStart::InfoPlayerStart()
+{
+}
+
+InfoPlayerStart::~InfoPlayerStart()
+{
+}
+
+REGISTER_ENTITY(InfoPlayerStart, "info_player_start");
 
 // Entity Registrator
 

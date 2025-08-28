@@ -19,8 +19,10 @@ void EntityAPI::RegisterEntity(const EntityRegistrationInfo& regInfo)
 	// Find already registered info
 	for (EntityRegInfoIt it = m_registeredInfo.begin(); it != m_registeredInfo.end(); ++it)
 	{
-		SDL_assert(strcmp(regInfo.m_classname, it->m_classname) == 0);
+		SDL_assert(strcmp(regInfo.m_classname, it->m_classname) != 0);
 	}
+
+	m_registeredInfo.push_back(regInfo);
 }
 
 IEntity* EntityAPI::CreateEntity(const char* classname)

@@ -22,6 +22,10 @@ list(APPEND SERVER_SOURCES
 	# Physics
 	physics_world.cpp
 	physics_world.h
+	
+	# Entities
+	player.cpp
+	player.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${SERVER_SOURCES})

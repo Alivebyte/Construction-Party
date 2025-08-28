@@ -4,7 +4,7 @@
 
 #include "baseentity.h"
 
-class ServerEntity : BaseEntity
+class ServerEntity : public BaseEntity
 {
 public:
 	ServerEntity();
