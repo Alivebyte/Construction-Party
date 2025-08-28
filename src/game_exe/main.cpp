@@ -109,7 +109,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     ret = App_Start(argc, argv);
     for (int i = 0; i < argc; ++i)
         free(argv[i]);
-    free(argv);
+   // free(argv);
     
     return ret;
 }

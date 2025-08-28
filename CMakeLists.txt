@@ -6,7 +6,7 @@ option(BUILD_EXE "Build game executable" ON)
 option(BUILD_DEDICATED "Build server executable" OFF)
 option(BUILD_ENGINE "Build engine library" ON)
 option(BUILD_CLIENT "Build client library" OFF)
-option(BUILD_SERVER "Build server library" OFF)
+option(BUILD_SERVER "Build server library" ON)
 option(ENABLE_TRACY "Enable tracy profiling" OFF)
 
 include(VcpkgIntegration)

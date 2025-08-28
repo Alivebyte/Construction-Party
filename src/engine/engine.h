@@ -14,6 +14,9 @@ public:
 	void Shutdown() override;
 
 private:
+	void InitServerDll();
+
+private:
 	SDL_Window* m_pWindow = nullptr;
 	bool m_bExit = false;
 };

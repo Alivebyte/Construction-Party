@@ -1,4 +1,4 @@
-#include "entity.h"
+#include "ientity.h"
 #include <vector>
 #include <SDL.h>
 

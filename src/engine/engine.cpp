@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "ifilesystem.h"
 #include "ilogger.h"
+#include "ientity.h"
 #include "render.h"
 #include "renderdevice.h"
 #include "gpu_buffer.h"
@@ -16,8 +17,9 @@ static bool s_bCoreProfile = true;
 
 static GPUBuffer* s_pTriangleBuffer = nullptr;
 static Shader* s_pShader = nullptr;
-
 static Model* s_pTestModel = nullptr;
+
+static IServerGame* g_pServerGame = nullptr;
 
 void Engine::Init()
 {
@@ -77,6 +79,13 @@ void Engine::Init()
 		// Load example model
 		s_pTestModel = g_pModelSystem->LoadModel("data/models/test.obj");
 	}
+
+	// Load server dll
+	InitServerDll();
+
+	// Initialize Server Game
+	// #TODO: Should be on game start?
+	g_pServerGame->Init();
 
 	GetLogger()->Print("Engine started!\n");
 	GetLogger()->Print("Starting engine loop.\n");
@@ -158,3 +167,40 @@ void Engine::Shutdown()
 	GetLogger()->Shutdown();
 }
 
+#if defined(WIN32)
+#include <Windows.h>
+#define LIB_SERVER "server.dll"
+#elif defined(_LINUX)
+#define LIB_SERVER "libserver.so"
+#endif
+
+#define LIB_DIR "bin/"
+#define LIB_SERVER_PATH LIB_DIR LIB_SERVER
+
+static HINSTANCE g_hServerDll = NULL;
+
+static const char* GetErrorString()
+{
+#ifdef WIN32
+	static char buf[1024];
+	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf, sizeof(buf), NULL);
+	return buf;
+#else
+	return dlerror();
+#endif 
+}
+
+void Engine::InitServerDll()
+{
+	g_hServerDll = LoadLibrary(LIB_SERVER_PATH);
+	if (!g_hServerDll)
+		GetLogger()->Error("Couldn't load server.dll!\n%s", GetErrorString());
+
+	pfnServerMain getServer = (pfnServerMain)GetProcAddress(g_hServerDll, "Server_Main");
+	if (!getServer)
+	{
+		GetLogger()->Error(LIB_SERVER " doesn't have exported Server_Main.\n%s", GetErrorString());
+	}
+
+	g_pServerGame = getServer();
+}
