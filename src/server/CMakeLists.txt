@@ -7,6 +7,9 @@ find_package(Jolt CONFIG REQUIRED)
 set(ENGINE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/engine")
 set(GAME_SHARED_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/game_shared")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<0:>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<0:>")
+
 list(APPEND SERVER_SOURCES
 	# Core
 	server_main.cpp
