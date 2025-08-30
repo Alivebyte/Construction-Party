@@ -1,7 +1,10 @@
-#version 130
+#version 120
 
+uniform sampler2D u_albedoTexture;
+
+varying vec2 v_texcoord;
 varying vec4 v_color;
 
 void main() {
-	gl_FragColor = v_color;
+	gl_FragColor = v_color * texture2D(u_albedoTexture, v_texcoord.st);
 }

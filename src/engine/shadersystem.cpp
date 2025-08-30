@@ -40,6 +40,7 @@ static size_t g_attributeSizeTable[VERTEXATTR_MAX] =
 	sizeof(float) * 2,//VERTEXATTR_VEC2,
 	sizeof(float) * 3,//VERTEXATTR_VEC3,
 	sizeof(float) * 4,//VERTEXATTR_VEC4,
+	sizeof(unsigned int)//VERTEXATTR_UINT
 };
 
 size_t g_vertexAttribsSizeTable[VERTEXATTR_MAX] =
@@ -47,6 +48,7 @@ size_t g_vertexAttribsSizeTable[VERTEXATTR_MAX] =
 	2, // VERTEXATTR_VEC2
 	3, // VERTEXATTR_VEC3
 	4, // VERTEXATTR_VEC4
+	4, // VERTEXATTR_UINT
 };
 
 size_t g_vertexAttribsRealSizeTable[VERTEXATTR_MAX] =
@@ -54,6 +56,7 @@ size_t g_vertexAttribsRealSizeTable[VERTEXATTR_MAX] =
 	8, // VERTEXATTR_VEC2
 	12, // VERTEXATTR_VEC3
 	16, // VERTEXATTR_VEC4
+	4, // VERTEXATTR_UINT
 };
 
 ShaderSystem* g_pShaderSystem = nullptr;
@@ -121,9 +124,18 @@ void ShaderSystem::SetShader(const Shader* shader)
 
 		glEnableVertexAttribArray(GLuint(i));
 
-		glVertexAttribPointer(GLuint(i), GLint(g_vertexAttribsSizeTable[layoutEntry->attribute]),
-			GL_FLOAT, GL_FALSE, static_cast<GLsizei>(shader->m_stride),
-			(appliedOffset > 0) ? (void*)(appliedOffset * sizeof(float)) : (void*)0);
+		if (layoutEntry->attribute == VERTEXATTR_UINT)
+		{
+			glVertexAttribPointer(GLuint(i), GLint(g_vertexAttribsSizeTable[layoutEntry->attribute]),
+				GL_UNSIGNED_BYTE, GL_TRUE, static_cast<GLsizei>(shader->m_stride),
+				(appliedOffset > 0) ? (void*)(appliedOffset * sizeof(unsigned int)) : (void*)0);
+		}
+		else
+		{
+			glVertexAttribPointer(GLuint(i), GLint(g_vertexAttribsSizeTable[layoutEntry->attribute]),
+				GL_FLOAT, GL_FALSE, static_cast<GLsizei>(shader->m_stride),
+				(appliedOffset > 0) ? (void*)(appliedOffset * sizeof(float)) : (void*)0);
+		}
 
 		appliedOffset += g_vertexAttribsSizeTable[layoutEntry->attribute];
 	}

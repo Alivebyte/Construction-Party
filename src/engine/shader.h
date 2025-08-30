@@ -3,77 +3,8 @@
 
 #include <stdint.h>
 #include <string>
+#include "render_shared.h"
 #include "gl_shared.h"
-
-const int SHADERUNIFORM_MAX_COUNT = 16;
-const int INPUT_LAYOUT_MAX_COUNT = 8;
-
-enum VertexAttribute_t {
-	VERTEXATTR_VEC2,
-	VERTEXATTR_VEC3,
-	VERTEXATTR_VEC4,
-
-	VERTEXATTR_MAX
-};
-
-enum ShaderSemantic_t {
-	SHADERSEMANTIC_POSITION,
-	SHADERSEMANTIC_COLOR,
-	SHADERSEMANTIC_TEXCOORD,
-	SHADERSEMANTIC_TEXCOORD0,
-	SHADERSEMANTIC_TEXCOORD1,
-	SHADERSEMANTIC_NORMAL,
-	SHADERSEMANTIC_TANGENT,
-	SHADERSEMANTIC_BITANGENT,
-	SHADERSEMANTIC_BONEIDS,
-	SHADERSEMANTIC_WEIGHTS,
-
-	SHADERSEMANTIC_MAX
-};
-
-enum ShaderUniformType_t {
-	SHADERUNIFORM_FLOAT,
-	SHADERUNIFORM_VEC2,
-	SHADERUNIFORM_VEC3,
-	SHADERUNIFORM_VEC4,
-	SHADERUNIFORM_MAT4,
-
-	SHADERUNIFORM_MAX
-};
-
-enum ShaderUniform_t
-{
-	UNIFORM_MODEL_MATRIX,
-	UNIFORM_VIEW_MATRIX,
-	UNIFORM_PROJ_MATRIX,
-	UNIFORM_MVP_MATRIX,
-	UNIFORM_CUSTOM_COLOR,
-	UNIFORM_SUN_DIRECTION,
-	UNIFORM_SUN_COLOR,
-	UNIFORM_SUN_AMBIENT,
-
-	UNIFORM_MAX,
-};
-
-enum ShaderSamplers_t
-{
-	SAMPLER_ALBEDO,
-	SAMPLER_NORMAL,
-	SAMPLER_LIGHTMAP,
-
-	SAMPLER_MAX
-};
-
-struct InputLayoutDesc_t {
-	VertexAttribute_t attribute;
-	ShaderSemantic_t semantic;
-};
-
-struct ShaderUniformDesc_t {
-	ShaderUniformType_t type;
-	const char* name;
-	size_t size;
-};
 
 class ShaderSystem;
 

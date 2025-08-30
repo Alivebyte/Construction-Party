@@ -19,6 +19,7 @@ static GPUBuffer* s_pTriangleBuffer = nullptr;
 static Shader* s_pShader = nullptr;
 static Model* s_pTestModel = nullptr;
 
+static IClientGame* g_pClientGame = nullptr;
 static IServerGame* g_pServerGame = nullptr;
 
 int g_mousePoxX = 0;
@@ -86,9 +87,16 @@ void Engine::Init()
 	// Load server dll
 	InitServerDll();
 
+	// Load client dll
+	InitClientDll();
+
 	// Initialize Server Game
 	// #TODO: Should be on game start?
 	g_pServerGame->Init();
+
+	// Initialize Client Game
+	// #TODO: Should be on game start?
+	g_pClientGame->Init();
 
 	GetLogger()->Print("Engine started!\n");
 	GetLogger()->Print("Starting engine loop.\n");
@@ -123,6 +131,9 @@ void Engine::Loop()
 			default:
 				break;
 			}
+
+			// Client event handling
+			g_pClientGame->OnEvent(&event);
 		}
 	}
 
@@ -132,24 +143,30 @@ void Engine::Loop()
 	// Rendering
 	if (!s_bIsDedicated)
 	{
-		int windowSizeX = 0, windowSizeY = 0;
-		SDL_GetWindowSize(m_pWindow, &windowSizeX, &windowSizeY);
+	//	int windowSizeX = 0, windowSizeY = 0;
+	//	SDL_GetWindowSize(m_pWindow, &windowSizeX, &windowSizeY);
 
-		// install viewport
-		g_pRenderDevice->SetViewport(0, 0, windowSizeX, windowSizeY);
+	//	// install viewport
+	//	g_pRenderDevice->SetViewport(0, 0, windowSizeX, windowSizeY);
 
-		// Clear screen
+	//	// Clear screen
+	//	g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
+
+	//	// Draw model
+	//	
+	//	static glm::mat4 identityMatrix = glm::mat4(1.0f);
+	//	s_pTestModel->Draw(identityMatrix);
+
+	//	// Draw triangle
+	//	g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
+	//	g_pShaderSystem->SetShader(s_pShader);
+	//	g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, 3);
+
+		g_pRender->ResetStates();
+
 		g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
 
-		// Draw model
-		
-		static glm::mat4 identityMatrix = glm::mat4(1.0f);
-		s_pTestModel->Draw(identityMatrix);
-
-		// Draw triangle
-		g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
-		g_pShaderSystem->SetShader(s_pShader);
-		g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, 3);
+		g_pClientGame->Render();
 
 		// Present the backbuffer to screen
 		g_pRender->Present();
@@ -173,16 +190,25 @@ void Engine::Shutdown()
 	GetLogger()->Shutdown();
 }
 
+SDL_Window* Engine::GetWindow()
+{
+	return m_pWindow;
+}
+
 #if defined(WIN32)
 #include <Windows.h>
+#define LIB_CLIENT "client.dll"
 #define LIB_SERVER "server.dll"
 #elif defined(_LINUX)
+#define LIB_CLIENT "libclient.so"
 #define LIB_SERVER "libserver.so"
 #endif
 
 #define LIB_DIR "bin/"
+#define LIB_CLIENT_PATH LIB_DIR LIB_CLIENT
 #define LIB_SERVER_PATH LIB_DIR LIB_SERVER
 
+static HINSTANCE g_hClientDll = NULL;
 static HINSTANCE g_hServerDll = NULL;
 
 static const char* GetErrorString()
@@ -194,6 +220,21 @@ static const char* GetErrorString()
 #else
 	return dlerror();
 #endif 
+}
+
+void Engine::InitClientDll()
+{
+	g_hClientDll = LoadLibrary(LIB_CLIENT_PATH);
+	if (!g_hClientDll)
+		GetLogger()->Error("Couldn't load server.dll!\n%s", GetErrorString());
+
+	pfnClientMain getClient = (pfnClientMain)GetProcAddress(g_hClientDll, "Client_Main");
+	if (!getClient)
+	{
+		GetLogger()->Error(LIB_CLIENT " doesn't have exported Client_Main.\n%s", GetErrorString());
+	}
+
+	g_pClientGame = getClient();
 }
 
 void Engine::InitServerDll()

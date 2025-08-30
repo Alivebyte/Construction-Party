@@ -124,6 +124,28 @@ uint32_t GetGLBlendFactor(BlendFactor factor)
 	return 0;
 }
 
+uint32_t GetGLEquation(BlendEquation equation)
+{
+	switch (equation)
+	{
+	case BE_FUNC_ADD:
+		return GL_FUNC_ADD;
+	case BE_FUNC_SUBTRACT:
+		return GL_FUNC_SUBTRACT;
+	case BE_FUNC_REVERSE_SUBTRACT:
+		return GL_FUNC_REVERSE_SUBTRACT;
+	case BE_MIN:
+		return GL_MIN;
+	case BE_MAX:
+		return GL_MAX;
+
+	default:
+		break;
+	}
+
+	return 0;
+}
+
 uint32_t GetGLDepthFunc(DepthFunc func)
 {
 	switch (func)

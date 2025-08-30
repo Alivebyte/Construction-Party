@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 option(BUILD_EXE "Build game executable" ON)
 option(BUILD_DEDICATED "Build server executable" OFF)
 option(BUILD_ENGINE "Build engine library" ON)
-option(BUILD_CLIENT "Build client library" OFF)
+option(BUILD_CLIENT "Build client library" ON)
 option(BUILD_SERVER "Build server library" ON)
 option(ENABLE_TRACY "Enable tracy profiling" OFF)
 

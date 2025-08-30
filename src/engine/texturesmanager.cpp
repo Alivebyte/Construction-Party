@@ -92,7 +92,7 @@ void TexturesManager::SetTexture(int slot, Texture2D* texture)
 	glBindTexture(GL_TEXTURE_2D, texture ? texture->GetHandle() : 0);
 }
 
-Texture2D* TexturesManager::CreateManual2D(const char* name, uint32_t width, uint32_t height, PixelFormat format, bool useAsRenderTarget)
+Texture2D* TexturesManager::CreateManual2D(const char* name, uint32_t width, uint32_t height, PixelFormat format, void* pData, bool useAsRenderTarget)
 {
 	for (std::vector<Texture2D*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it) {
 		if ((*it)->m_textureFileName == name) {
@@ -103,11 +103,13 @@ Texture2D* TexturesManager::CreateManual2D(const char* name, uint32_t width, uin
 
 	// allocate
 	Texture2D* texture = Texture2D::Create();
-	texture->CreateRaw(nullptr, width, height, format);
+	texture->CreateRaw(pData, width, height, format);
 	texture->m_textureFileName = name;
 
 	if (useAsRenderTarget)
 		GetLogger()->Print("Created rt texture [%s]", name);
+
+	m_textures.push_back(texture);
 
 	return texture;
 }

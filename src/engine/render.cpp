@@ -11,6 +11,47 @@ static GLuint g_VAO = 0;
 glm::vec3 g_viewOrigin;
 glm::vec3 g_viewOrient;
 
+#ifdef GL_DEBUG_OUTPUT
+#define GL_DEBUG_OUTPUT                   0x92E0
+#endif // GL_DEBUG_OUTPUT
+
+#ifndef GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB
+#define GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB 0x8242
+#endif // !GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB
+
+#ifndef GL_DEBUG_TYPE_ERROR_ARB
+#define GL_DEBUG_TYPE_ERROR_ARB 0x824C
+#endif // !GL_DEBUG_TYPE_ERROR_ARB
+
+#ifndef GL_ARB_debug_output
+#define GL_ARB_debug_output 1
+typedef void (APIENTRYP PFNGLDEBUGMESSAGECONTROLARBPROC)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled);
+PFNGLDEBUGMESSAGECONTROLARBPROC glDebugMessageControlARB;
+typedef void (APIENTRYP PFNGLDEBUGMESSAGEINSERTARBPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf);
+PFNGLDEBUGMESSAGEINSERTARBPROC glDebugMessageInsertARB;
+typedef void (APIENTRYP PFNGLDEBUGMESSAGECALLBACKARBPROC)(GLDEBUGPROCARB callback, const void* userParam);
+PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB;
+typedef GLuint(APIENTRYP PFNGLGETDEBUGMESSAGELOGARBPROC)(GLuint count, GLsizei bufSize, GLenum* sources, GLenum* types, GLuint* ids, GLenum* severities, GLsizei* lengths, GLchar* messageLog);
+PFNGLGETDEBUGMESSAGELOGARBPROC glGetDebugMessageLogARB;
+#endif
+
+void APIENTRY GL_DebugOutput(GLenum source,
+	GLenum type,
+	unsigned int id,
+	GLenum severity,
+	GLsizei length,
+	const char* message,
+	const void* userParam)
+{
+	// Nvidia spam too much about buffer mapping
+	if (type == 0x8251)
+		return;
+
+	GetLogger()->Print("OpenGL: %stype = 0x%x, severity = 0x%x, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR_ARB ? "** GL ERROR ** " : ""),
+		type, severity, message);
+}
+
 Render* g_pRender = nullptr;
 
 Render::Render() :
@@ -52,6 +93,20 @@ void Render::Init(SDL_Window* pWindow)
 
 	// Reset OpenGL error stack
 	glGetError();
+
+	// Load extension
+	glDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC)SDL_GL_GetProcAddress("glDebugMessageCallbackARB");
+
+	// Enable debug output
+	if (glDebugMessageCallbackARB)
+	{
+		GetLogger()->Print("...found GL_ARB_debug_output");
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+		glDebugMessageCallbackARB(GL_DebugOutput, NULL);
+	}
+
 
 	// Create render device
 	g_pRenderDevice = new RenderDevice();
@@ -114,4 +169,141 @@ void Render::Shutdown()
 void Render::Present(bool vsync)
 {
 	SDL_GL_SwapWindow(m_pWindow);
+}
+
+void Render::ResetStates()
+{
+	g_pRenderDevice->SetDepthTest(false);
+	g_pRenderDevice->SetDepthWrite(false);
+	g_pRenderDevice->SetStencilTest(false);
+	g_pRenderDevice->SetScissorTest(false);
+	g_pRenderDevice->SetCullFace(false);
+	g_pRenderDevice->SetBlending(false);
+}
+
+IShader* Render::CreateShader(const char* name, const char* vsfilepath, const char* psfilepath, InputLayoutDesc_t* inputLayout, int inputLayoutCount)
+{
+	return (IShader*)g_pShaderSystem->CreateShader(name, vsfilepath, psfilepath, inputLayout, inputLayoutCount);
+}
+
+IGPUBuffer* Render::CreateVertexBuffer(void* pData, int size, bool dynamic)
+{
+	return (IGPUBuffer*)g_pRenderDevice->CreateVertexBuffer(pData, size, dynamic);
+}
+
+IGPUBuffer* Render::CreateIndexBuffer(void* pData, int size, bool dynamic)
+{
+	return (IGPUBuffer*)g_pRenderDevice->CreateIndexBuffer(pData, size, dynamic);
+}
+
+ITexture2D* Render::CreateTexture2D(const char* name, uint32_t width, uint32_t height, PixelFormat format, void* pData, bool useAsRenderTarget)
+{
+	return (ITexture2D*)g_pTexturesManager->CreateManual2D(name, width, height, format, pData, useAsRenderTarget);
+}
+
+void Render::SetTexture2D(int slot, ITexture2D* texture)
+{
+	g_pTexturesManager->SetTexture(slot, (Texture2D*)texture);
+}
+
+void Render::SetViewport(int x, int y, int w, int h)
+{
+	g_pRenderDevice->SetViewport(x, y, w, h);
+}
+
+void Render::SetVertexBuffer(IGPUBuffer* buffer)
+{
+	g_pRenderDevice->SetVerticesBuffer((GPUBuffer*)buffer);
+}
+
+void Render::SetIndexBuffer(IGPUBuffer* buffer)
+{
+	g_pRenderDevice->SetIndicesBuffer((GPUBuffer*)buffer);
+}
+
+void Render::SetScissor(int x, int y, int width, int height)
+{
+	glScissor(x, y, width, height);
+}
+
+void Render::DrawIndexed(PrimitiveType mode, uint32_t count, bool is16bitIndices, const void* indices)
+{
+	glDrawElements(GL_TRIANGLES, count, is16bitIndices ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, indices);
+
+	GL_CHECK_ERROR();
+}
+
+void Render::SetDepthTest(bool enable)
+{
+	g_pRenderDevice->SetDepthTest(enable);
+}
+
+void Render::SetDepthWrite(bool enable)
+{
+	g_pRenderDevice->SetDepthWrite(enable);
+}
+
+void Render::SetStencilTest(bool enable)
+{
+	g_pRenderDevice->SetStencilTest(enable);
+}
+
+void Render::SetScissorTest(bool enable)
+{
+	g_pRenderDevice->SetScissorTest(enable);
+}
+
+void Render::SetBlending(bool value)
+{
+	g_pRenderDevice->SetBlending(value);
+}
+
+void Render::SetBlendingFunction(BlendFactor srcFactor, BlendFactor destFactor)
+{
+	g_pRenderDevice->SetBlendingFunction(srcFactor, destFactor);
+}
+
+void Render::SetBlendEquation(BlendEquation equation)
+{
+	g_pRenderDevice->SetBlendEquation(equation);
+}
+
+void Render::SetBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
+{
+	g_pRenderDevice->SetBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+}
+
+void Render::SetCullFace(bool enable)
+{
+	g_pRenderDevice->SetCullFace(enable);
+}
+
+ITexture2D* Render::LoadTexture2D(const char* texturename, bool useMipmaps)
+{
+	return (ITexture2D*)g_pTexturesManager->LoadTexture2D(texturename, useMipmaps);
+}
+
+void Render::SetShader(const IShader* shader)
+{
+	g_pShaderSystem->SetShader((const Shader*)shader);
+}
+
+void Render::SetUniformSampler(const IShader* shader, ShaderSamplers_t sampler, int index)
+{
+	g_pShaderSystem->SetUniformSampler((const Shader*)shader, sampler, index);
+}
+
+void Render::SetUniformFloat4(const IShader* shader, ShaderUniform_t uniform, const void* data)
+{
+	g_pShaderSystem->SetUniformFloat4((const Shader*)shader, uniform, data);
+}
+
+void Render::SetUniformMatrix(const IShader* shader, ShaderUniform_t uniform, const void* data)
+{
+	g_pShaderSystem->SetUniformMatrix((const Shader*)shader, uniform, data);
+}
+
+IRender* GetRender()
+{
+	return g_pRender;
 }

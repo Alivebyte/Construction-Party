@@ -8,20 +8,6 @@ class GPUBuffer;
 class VertexFormat;
 class RenderTarget;
 
-enum TextureSurfaceType
-{
-	TST_COLOR = 1 << 0,
-	TST_DEPTH = 1 << 1,
-	TST_STENCIL = 1 << 2,
-};
-
-enum PrimitiveType
-{
-	PT_POINTS,
-	PT_LINES,
-	PT_TRIANGLES
-};
-
 class RenderDevice
 {
 public:
@@ -37,8 +23,16 @@ public:
 	void SetDepthTest(bool enable);
 	void SetDepthWrite(bool enable);
 
+	void SetStencilTest(bool enable);
+
+	void SetScissorTest(bool enable);
+
+	void SetCullFace(bool enable);
+
 	void SetBlending(bool value);
 	void SetBlendingFunction(BlendFactor srcFactor, BlendFactor destFactor);
+	void SetBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+	void SetBlendEquation(BlendEquation equation);
 
 	void SetViewport(int x, int y, int w, int h);
 

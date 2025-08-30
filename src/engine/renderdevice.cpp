@@ -73,6 +73,21 @@ void RenderDevice::SetDepthWrite(bool enable)
 	glDepthMask(enable ? GL_TRUE : GL_FALSE);
 }
 
+void RenderDevice::SetStencilTest(bool enable)
+{
+	enable ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
+}
+
+void RenderDevice::SetScissorTest(bool enable)
+{
+	enable ? glEnable(GL_SCISSOR_TEST) : glDisable(GL_SCISSOR_TEST);
+}
+
+void RenderDevice::SetCullFace(bool enable)
+{
+	enable ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+}
+
 void RenderDevice::SetBlending(bool value)
 {
 	if (m_blending != value) {
@@ -93,6 +108,17 @@ void RenderDevice::SetBlendingFunction(BlendFactor srcFactor, BlendFactor destFa
 		// push to gl state
 		glBlendFunc(GetGLBlendFactor(srcFactor), GetGLBlendFactor(destFactor));
 	}
+}
+
+void RenderDevice::SetBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
+{
+	glBlendFuncSeparate(GetGLBlendFactor(srcRGB), GetGLBlendFactor(dstRGB),
+		GetGLBlendFactor(srcAlpha), GetGLBlendFactor(dstAlpha));
+}
+
+void RenderDevice::SetBlendEquation(BlendEquation equation)
+{
+	glBlendEquation(GetGLEquation(equation));
 }
 
 void RenderDevice::SetViewport(int x, int y, int w, int h)

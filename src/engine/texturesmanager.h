@@ -24,6 +24,7 @@ public:
 		uint32_t width,
 		uint32_t height,
 		PixelFormat format,
+		void* pData = nullptr,
 		bool useAsRenderTarget = false);
 
 	Texture2D* LoadTexture2D(const char* texturename, bool useMipmaps = false);

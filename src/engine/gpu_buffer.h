@@ -2,10 +2,11 @@
 #define GPU_BUFFER_H
 
 #include "render_shared.h"
+#include "irender.h"
 
 class RenderDevice;
 
-class GPUBuffer
+class GPUBuffer : public IGPUBuffer
 {
 	friend class RenderDevice;
 public:

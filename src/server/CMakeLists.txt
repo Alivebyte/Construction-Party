@@ -11,7 +11,7 @@ list(APPEND SERVER_SOURCES
 	# Core
 	server_main.cpp
 	
-	# Game shader
+	# Game shared
 	${GAME_SHARED_SOURCE_DIR}/baseentity.cpp
 	${GAME_SHARED_SOURCE_DIR}/baseentity.h
 	

@@ -4,10 +4,11 @@
 #include <string>
 
 #include "render_shared.h"
+#include "irender.h"
 
 class TexturesManager;
 
-class Texture2D
+class Texture2D : public ITexture2D
 {
 	friend class TexturesManager;
 public:

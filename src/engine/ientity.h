@@ -29,9 +29,7 @@ class IClientGameAPI
 {
 public:
 	virtual void GetMousePos(int* pX, int* pY) = 0;
-
 	virtual void SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz) = 0;
-
 	virtual Model* LoadModel(const char* pFilename) = 0;
 };
 
@@ -46,5 +44,20 @@ public:
 };
 
 typedef IServerGame* (*pfnServerMain)();
+
+typedef union SDL_Event SDL_Event;
+
+class IClientGame
+{
+public:
+	virtual void Init() = 0;
+	virtual void Shutdown() = 0;
+
+	virtual void OnEvent(const SDL_Event* pEvent) = 0;
+
+	virtual void Render() = 0;
+};
+
+typedef IClientGame* (*pfnClientMain)();
 
 #endif // !ENTITY_H

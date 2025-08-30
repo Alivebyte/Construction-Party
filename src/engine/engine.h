@@ -12,8 +12,10 @@ public:
 	void RunLoop() override;
 	void Loop() override;
 	void Shutdown() override;
+	SDL_Window* GetWindow() override;
 
 private:
+	void InitClientDll();
 	void InitServerDll();
 
 private:

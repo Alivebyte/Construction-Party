@@ -21,6 +21,7 @@ list(APPEND ENGINE_SOURCES
 	filesystem.h
 	filesystem.cpp
 	# Render
+	irender.h
 	gl_shared.h
 	gl_shared.cpp
 	gpu_buffer.h

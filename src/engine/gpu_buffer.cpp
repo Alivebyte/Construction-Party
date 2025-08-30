@@ -90,6 +90,8 @@ void GPUBuffer::UpdateBuffer(void* data, size_t size)
 
 	glBufferData(m_target, size, data, GL_DYNAMIC_DRAW);
 
+	GL_CHECK_ERROR();
+
 	GLenum error = glGetError();
 	if (error == GL_OUT_OF_MEMORY)
 	{

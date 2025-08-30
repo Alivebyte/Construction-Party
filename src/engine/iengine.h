@@ -1,6 +1,8 @@
 #ifndef IENGINE_H
 #define IENGINE_H
 
+struct SDL_Window;
+
 class IEngine
 {
 public:
@@ -8,6 +10,9 @@ public:
 	virtual void RunLoop() = 0;
 	virtual void Loop() = 0;
 	virtual void Shutdown() = 0;
+	virtual SDL_Window* GetWindow() = 0;
 };
+
+extern "C" __declspec(dllexport) IEngine* GetEngine();
 
 #endif

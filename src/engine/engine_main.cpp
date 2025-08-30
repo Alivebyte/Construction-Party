@@ -13,3 +13,8 @@ extern "C" int __declspec(dllexport) Engine_Main(int argc, char** argv)
 	}
 	else return 1;
 }
+
+IEngine* GetEngine()
+{
+	return g_Engine;
+}
