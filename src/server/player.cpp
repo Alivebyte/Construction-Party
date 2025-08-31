@@ -25,7 +25,7 @@ void Player::Think()
 {
 	JPH::BodyInterface& bi = g_JPHPhysicsSystem.GetBodyInterface();
 
-	static Vec3Arg lastHitPos;
+	//static Vec3Arg lastHitPos;
 
 	if (m_RayPickMode)
 	{
