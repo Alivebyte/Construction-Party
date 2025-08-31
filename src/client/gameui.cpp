@@ -1,5 +1,6 @@
 #include "ilogger.h"
 #include "gameui.h"
+#include "ui_menu.h"
 
 #include <SDL.h>
 #include <imgui.h>
@@ -73,7 +74,7 @@ void GameUI::RenderMainMenu()
 		
 		if (ImGui::ImageButtonWithText("set_game_btn", (ImTextureID)m_pButtonTex, "Settings", ImVec2(m_pButtonTex->GetWidth(), m_pButtonTex->GetHeight())))
 		{
-			GetLogger()->Print("Settings");
+			g_ui_menu_options.open();
 		}
 		
 		ImGui::SetCursorPosX(50);
@@ -88,6 +89,8 @@ void GameUI::RenderMainMenu()
 	}
 
 	ImGui::End();
+
+	g_ui_menu_options.draw();
 
 	//ImGui::Begin("UI Zoo");
 	//ImGui::Image((ImTextureID)m_pCursorTex, ImVec2(m_pCursorTex->GetWidth(), m_pCursorTex->GetHeight())); ImGui::SameLine();

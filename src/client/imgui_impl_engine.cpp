@@ -250,7 +250,6 @@ void ImGui_ImplEngine_DestroyFontsTexture()
     ImGui_Impl_IRender_Data* bd = ImGui_GetBackendData();
     if (bd->FontTexture)
     {
-        delete bd->FontTexture;
         io.Fonts->SetTexID(0);
         bd->FontTexture = 0;
     }

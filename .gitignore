@@ -20,3 +20,5 @@ CMakeUserPresets.json
 *.exe
 engine.log
 game.pdb
+config.xml
+imgui.ini

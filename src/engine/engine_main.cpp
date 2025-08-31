@@ -9,6 +9,7 @@ extern "C" int __declspec(dllexport) Engine_Main(int argc, char** argv)
 	if (g_Engine)
 	{
 		g_Engine->Init();
+		g_Engine->Shutdown();
 		return 0;
 	}
 	else return 1;

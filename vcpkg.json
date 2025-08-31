@@ -21,7 +21,8 @@
 		  "description": "Client library",
 		  "dependencies": [
 			{ "name": "sdl2", "version>=": "2.32.8" },
-			{ "name": "imgui", "version>=": "1.91.9" }
+			{ "name": "imgui", "version>=": "1.91.9" },
+			{ "name": "tinyxml2", "version>=": "10.0.0" }
 		  ]
 	  },
 	  "server":

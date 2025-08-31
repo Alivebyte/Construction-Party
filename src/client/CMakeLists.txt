@@ -4,6 +4,7 @@ project(client)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(tinyxml2 CONFIG REQUIRED)
 
 set(ENGINE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/engine")
 set(GAME_SHARED_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/game_shared")
@@ -21,6 +22,8 @@ list(APPEND CLIENT_SOURCES
 	# Gui
 	gameui.cpp
 	gameui.h
+	ui_menu.cpp
+	ui_menu.h
 
 	# Game shared
 	${GAME_SHARED_SOURCE_DIR}/baseentity.cpp
@@ -36,6 +39,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${ENGINE_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${GAME_SHARED_SOURCE_DIR})
 
 # TODO
-target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui engine glm::glm $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml2::tinyxml2 imgui::imgui engine glm::glm $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
 
 install( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE )

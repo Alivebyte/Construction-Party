@@ -1,15 +1,58 @@
 // client_main.cpp - Client game initialization
+#include "ilogger.h"
 #include "iengine.h"
 #include "ientity.h"
 #include "irender.h"
 
 #include "gameui.h"
+#include "ui_menu.h"
 
 #include <SDL.h>
 
 #include <imgui.h>
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_engine.h"
+
+void SDLCALL Engine_LogOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message)
+{
+	const char* str_cat = "";
+	switch (category) {
+	case APP_CATEGORY_UI:
+		str_cat = "UI";
+		break;
+	default:
+		str_cat = "";
+		break;
+	}
+
+	const char* str_prior = "";
+	switch (priority) {
+	case SDL_LOG_PRIORITY_VERBOSE:
+		str_prior = "VERBOSE";
+		break;
+	case SDL_LOG_PRIORITY_DEBUG:
+		str_prior = "DEBUG";
+		break;
+	case SDL_LOG_PRIORITY_INFO:
+		str_prior = "";
+		break;
+	case SDL_LOG_PRIORITY_WARN:
+		str_prior = "WARN";
+		break;
+	case SDL_LOG_PRIORITY_ERROR:
+		str_prior = "ERROR";
+		break;
+	case SDL_LOG_PRIORITY_CRITICAL:
+		str_prior = "CRITICAL";
+		break;
+	default:
+		break;
+	}
+
+	static char buffer[1024];
+	sprintf(buffer, "%s (%s): %s", str_prior, str_cat, message);
+	GetLogger()->Print(buffer);
+}
 
 class ClientGame : public IClientGame
 {
@@ -30,6 +73,22 @@ static ClientGame s_ClientGame;
 
 void ClientGame::Init()
 {
+	// Setup custom log function
+	SDL_LogSetPriority(APP_CATEGORY_UI, SDL_LOG_PRIORITY_VERBOSE);
+	SDL_LogSetOutputFunction(Engine_LogOutputFunction, nullptr);
+
+	// Initialize video manager
+	g_video_mode_mgr.init();
+
+	// Initialize config
+	g_options_config.load();
+
+	// Resize window with config values
+	SDL_SetWindowSize(GetEngine()->GetWindow(), g_options_config.m_video_mode.width, g_options_config.m_video_mode.height);
+	SDL_SetWindowPosition(GetEngine()->GetWindow(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+	SDL_SetWindowBordered(GetEngine()->GetWindow(), (SDL_bool)!g_options_config.m_borderless);
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -50,6 +109,8 @@ void ClientGame::Shutdown()
 	ImGui_ImplEngine_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+
+	g_options_config.save();
 }
 
 void ClientGame::OnEvent(const SDL_Event* pEvent)

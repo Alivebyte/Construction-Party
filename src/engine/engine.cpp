@@ -150,8 +150,10 @@ void Engine::Loop()
 
 void Engine::Shutdown()
 {
-	// TODO: Actually shutdown
-	
+	g_pClientGame->Shutdown();
+
+	g_pServerGame->Shutdown();
+
 	if (g_pRender)
 	{
 		g_pRender->Shutdown();
