@@ -24,6 +24,8 @@ public:
 
 	void RenderMainMenu();
 	void RenderHUD();
+
+	void RenderCursor();
 };
 
 extern GameUI g_GameUI;

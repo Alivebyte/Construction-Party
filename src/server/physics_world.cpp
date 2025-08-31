@@ -117,7 +117,7 @@ public:
 	// See: ContactListener
 	virtual JPH::ValidateResult OnContactValidate(const JPH::Body& inBody1, const JPH::Body& inBody2, JPH::RVec3Arg inBaseOffset, const JPH::CollideShapeResult& inCollisionResult) override
 	{
-		GetLogger()->Print("Contact validate callback");
+	//	GetLogger()->Print("Contact validate callback");
 
 		// Allows you to ignore a contact before it is created (using layers to not make objects collide is cheaper!)
 		return JPH::ValidateResult::AcceptAllContactsForThisBodyPair;
@@ -125,17 +125,17 @@ public:
 
 	virtual void OnContactAdded(const JPH::Body& inBody1, const JPH::Body& inBody2, const JPH::ContactManifold& inManifold, JPH::ContactSettings& ioSettings) override
 	{
-		GetLogger()->Print("A contact was added");
+	//	GetLogger()->Print("A contact was added");
 	}
 
 	virtual void OnContactPersisted(const JPH::Body& inBody1, const JPH::Body& inBody2, const JPH::ContactManifold& inManifold, JPH::ContactSettings& ioSettings) override
 	{
-		GetLogger()->Print("A contact was persisted");
+//		GetLogger()->Print("A contact was persisted");
 	}
 
 	virtual void OnContactRemoved(const JPH::SubShapeIDPair& inSubShapePair) override
 	{
-		GetLogger()->Print("A contact was removed");
+	//	GetLogger()->Print("A contact was removed");
 	}
 };
 
@@ -145,12 +145,12 @@ class MyBodyActivationListener : public JPH::BodyActivationListener
 public:
 	virtual void OnBodyActivated(const JPH::BodyID& inBodyID, JPH::uint64 inBodyUserData) override
 	{
-		GetLogger()->Print("A body got activated");
+	//	GetLogger()->Print("A body got activated");
 	}
 
 	virtual void OnBodyDeactivated(const JPH::BodyID& inBodyID, JPH::uint64 inBodyUserData) override
 	{
-		GetLogger()->Print("A body went to sleep");
+	//	GetLogger()->Print("A body went to sleep");
 	}
 };
 

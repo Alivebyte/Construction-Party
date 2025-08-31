@@ -144,13 +144,76 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 
 	if (!m_bShowMenu)
 	{
-		//static UserCmd userCmd;
-		//static bool firstTime = true;
-		//if (firstTime)
-		//{
-		//	memset(&userCmd, 0, sizeof(userCmd));
-		//	firstTime = false;
-		//}
+		// becase of dead lines, no more control :(
+		static UserCmd userCmd;
+		static bool firstTime = true;
+		if (firstTime)
+		{
+			memset(&userCmd, 0, sizeof(userCmd));
+			firstTime = false;
+		}
+
+		int width = 0, height = 0;
+		SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
+
+
+		// Send mouse to player
+		int posX = 0, posY = 0;
+		SDL_GetMouseState(&posX, &posY);
+		userCmd.mouseX = (int16_t)posX;
+		userCmd.mouseY = (int16_t)posY;
+
+		if (pEvent->type == SDL_MOUSEBUTTONDOWN)
+		{
+			if (pEvent->button.button == SDL_BUTTON_LEFT)
+				userCmd.action = true;
+		}
+		else if (pEvent->type == SDL_MOUSEBUTTONUP)
+		{
+			if (pEvent->button.button == SDL_BUTTON_LEFT)
+				userCmd.action = false;
+		}
+
+		// Send camera direction
+		//userCmd.dirx = m_Camera.GetDirection().x;
+		//userCmd.diry = m_Camera.GetDirection().y;
+		//userCmd.dirz = m_Camera.GetDirection().z;
+
+		// matrices
+		float fAspectRatio = (float)width / (float)height;
+		glm::mat4 projection = glm::perspective(glm::radians(70.0f), fAspectRatio, 0.1f, 100.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+
+		IEntity* pEntity = GetServerGameAPI()->FindEntityByClassname("player");
+		if (pEntity)
+		{
+			view = m_Camera.GetViewMatrix();
+		}
+
+		// Project mouse to the 
+		glm::vec2 ndc;
+		ndc.x = (2.0f * (float)posX) / (float)width -1.0f;
+		ndc.y = 1.0f - (2.0f * (float)posY) / (float)height; // flip Y
+
+		glm::vec4 nearPointNDC(ndc, -1.0f, 1.0f);
+		glm::vec4 farPointNDC(ndc, 1.0f, 1.0f);
+
+		glm::mat4 invVP = glm::inverse(projection * view);
+		glm::vec4 nearPointWorld = invVP * nearPointNDC;
+		glm::vec4 farPointWorld = invVP * farPointNDC;
+		nearPointWorld /= nearPointWorld.w;
+		farPointWorld /= farPointWorld.w;
+
+		userCmd.posx = nearPointWorld.x;
+		userCmd.posy = nearPointWorld.y;
+		userCmd.posz = nearPointWorld.z;
+
+		glm::vec3 direction = glm::normalize(glm::vec3(farPointWorld - nearPointWorld));
+		userCmd.dirx = direction.x;
+		userCmd.diry = direction.y;
+		userCmd.dirz = direction.z;
+
+		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
 
 		//if (pEvent->type == SDL_KEYDOWN)
 		//{
@@ -242,6 +305,8 @@ void ClientGame::Render()
 		g_GameUI.RenderMainMenu();
 	else
 		g_GameUI.RenderHUD();
+
+	g_GameUI.RenderCursor();
 
 	RenderOverlay();
 
