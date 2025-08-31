@@ -203,7 +203,7 @@ void Engine::InitClientDll()
 {
 	g_hClientDll = LoadLibrary(LIB_CLIENT_PATH);
 	if (!g_hClientDll)
-		GetLogger()->Error("Couldn't load server.dll!\n%s", GetErrorString());
+		GetLogger()->Error("Couldn't load client.dll!\n%s", GetErrorString());
 
 	pfnClientMain getClient = (pfnClientMain)GetProcAddress(g_hClientDll, "Client_Main");
 	if (!getClient)
