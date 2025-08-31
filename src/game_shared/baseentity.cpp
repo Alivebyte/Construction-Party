@@ -3,11 +3,12 @@
 // Register base entity
 REGISTER_ENTITY(BaseEntity, "entity");
 
-BaseEntity::BaseEntity() :
-	m_Origin(0.0f),
-	m_Orient(glm::identity<glm::quat>()),
-	m_pModel(nullptr)
+BaseEntity::BaseEntity()
 {
+	m_pClassname = nullptr;
+	m_Origin = glm::vec3(0.0f);
+	m_Orient = glm::quat(glm::identity<glm::quat>());
+	m_pModel = nullptr;
 }
 
 BaseEntity::~BaseEntity()

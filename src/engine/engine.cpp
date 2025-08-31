@@ -8,16 +8,13 @@
 #include "shader.h"
 #include "shadersystem.h"
 #include "modelsystem.h"
+#include "world.h"
 #include <stdio.h>
 
 #define WINDOW_TITLE "Construction Party"
 
 static bool s_bIsDedicated = false;
 static bool s_bCoreProfile = true;
-
-static GPUBuffer* s_pTriangleBuffer = nullptr;
-static Shader* s_pShader = nullptr;
-static Model* s_pTestModel = nullptr;
 
 static IClientGame* g_pClientGame = nullptr;
 static IServerGame* g_pServerGame = nullptr;
@@ -45,6 +42,9 @@ void Engine::Init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#ifdef _DEBUG
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+#endif // _DEBUG
 
 		//SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 		//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -59,29 +59,6 @@ void Engine::Init()
 	{
 		g_pRender = new Render();
 		g_pRender->Init(m_pWindow);
-
-		// Create vertex buffer
-
-		float vertices[] = {
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		};
-
-		s_pTriangleBuffer = g_pRenderDevice->CreateVertexBuffer(vertices, sizeof(vertices));
-
-		// Create shader
-	
-		static InputLayoutDesc_t inputLayout[] =
-		{
-			{ VERTEXATTR_VEC3, SHADERSEMANTIC_POSITION },
-			{ VERTEXATTR_VEC4, SHADERSEMANTIC_COLOR },
-		};
-
-		s_pShader = g_pShaderSystem->CreateShader("test", "data/shaders/test.vs", "data/shaders/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
-	
-		// Load example model
-		s_pTestModel = g_pModelSystem->LoadModel("data/models/test.obj");
 	}
 
 	// Load server dll
@@ -114,7 +91,11 @@ void Engine::RunLoop()
 
 void Engine::Loop()
 {
-	// TODO: Actual loop lol
+	// Get current ticks
+	static Uint32 startTime = SDL_GetTicks(), endTime = SDL_GetTicks();
+
+	startTime = SDL_GetTicks();
+	m_fDeltaTime = ((float)startTime - (float)endTime) / 1000.0f;
 
 	// Event handling
 	if (m_pWindow)
@@ -138,39 +119,33 @@ void Engine::Loop()
 	}
 
 	// Event Update
-	SDL_GetMouseState(&g_mousePoxX, &g_mousePoxY);
+	// ????
+
+	// Server world update
+	g_World.Update();
 
 	// Rendering
 	if (!s_bIsDedicated)
 	{
-	//	int windowSizeX = 0, windowSizeY = 0;
-	//	SDL_GetWindowSize(m_pWindow, &windowSizeX, &windowSizeY);
+		int windowSizeX = 0, windowSizeY = 0;
+		SDL_GetWindowSize(m_pWindow, &windowSizeX, &windowSizeY);
 
-	//	// install viewport
-	//	g_pRenderDevice->SetViewport(0, 0, windowSizeX, windowSizeY);
-
-	//	// Clear screen
-	//	g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
-
-	//	// Draw model
-	//	
-	//	static glm::mat4 identityMatrix = glm::mat4(1.0f);
-	//	s_pTestModel->Draw(identityMatrix);
-
-	//	// Draw triangle
-	//	g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
-	//	g_pShaderSystem->SetShader(s_pShader);
-	//	g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, 3);
-
-		g_pRender->ResetStates();
+		// install viewport
+		g_pRenderDevice->SetViewport(0, 0, windowSizeX, windowSizeY);
 
 		g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
+
+		g_World.Render();
 
 		g_pClientGame->Render();
 
 		// Present the backbuffer to screen
 		g_pRender->Present();
+
+		g_pRender->ResetStates();
 	}
+
+	endTime = startTime;
 }
 
 void Engine::Shutdown()
@@ -251,3 +226,53 @@ void Engine::InitServerDll()
 
 	g_pServerGame = getServer();
 }
+
+float Engine::GetDeltaTime()
+{
+	return m_fDeltaTime;
+}
+
+IServerGame* Engine::GetServerGame()
+{
+	return g_pServerGame;
+}
+
+//static GPUBuffer* s_pTriangleBuffer = nullptr;
+//static Shader* s_pShader = nullptr;
+//static Model* s_pTestModel = nullptr;
+
+//// Create vertex buffer
+//
+//float vertices[] = {
+//	-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+//	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+//	 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+//};
+//
+//s_pTriangleBuffer = g_pRenderDevice->CreateVertexBuffer(vertices, sizeof(vertices));
+//
+//// Create shader
+//
+//static InputLayoutDesc_t inputLayout[] =
+//{
+//	{ VERTEXATTR_VEC3, SHADERSEMANTIC_POSITION },
+//	{ VERTEXATTR_VEC4, SHADERSEMANTIC_COLOR },
+//};
+//
+//s_pShader = g_pShaderSystem->CreateShader("test", "data/shaders/test.vs", "data/shaders/test.ps", inputLayout, sizeof(inputLayout) / sizeof(inputLayout[0]));
+//
+//// Load example model
+//s_pTestModel = g_pModelSystem->LoadModel("data/models/test.obj");
+
+//	// Clear screen
+//	g_pRenderDevice->Clear(TST_COLOR | TST_DEPTH, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0xffffffff);
+
+//	// Draw model
+//	
+//	static glm::mat4 identityMatrix = glm::mat4(1.0f);
+//	s_pTestModel->Draw(identityMatrix);
+
+//	// Draw triangle
+//	g_pRenderDevice->SetVerticesBuffer(s_pTriangleBuffer);
+//	g_pShaderSystem->SetShader(s_pShader);
+//	g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, 3);

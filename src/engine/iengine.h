@@ -2,6 +2,7 @@
 #define IENGINE_H
 
 struct SDL_Window;
+class IServerGame;
 
 class IEngine
 {
@@ -11,6 +12,8 @@ public:
 	virtual void Loop() = 0;
 	virtual void Shutdown() = 0;
 	virtual SDL_Window* GetWindow() = 0;
+	virtual IServerGame* GetServerGame() = 0;
+	virtual float GetDeltaTime() = 0;
 };
 
 extern "C" __declspec(dllexport) IEngine* GetEngine();

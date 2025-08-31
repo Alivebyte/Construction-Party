@@ -10,6 +10,8 @@ public:
 	~Player();
 
 	void Think() override;
+
+	void ParseUserCmd(const UserCmd* pUserCmd);
 };
 
 #endif // !PLAYER_H

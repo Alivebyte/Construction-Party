@@ -13,6 +13,8 @@ public:
 	void Loop() override;
 	void Shutdown() override;
 	SDL_Window* GetWindow() override;
+	IServerGame* GetServerGame() override;
+	float GetDeltaTime() override;
 
 private:
 	void InitClientDll();
@@ -20,10 +22,9 @@ private:
 
 private:
 	SDL_Window* m_pWindow = nullptr;
+	float m_fDeltaTime = 0.0f;
 	bool m_bExit = false;
-};
 
-extern int g_mousePoxX;
-extern int g_mousePoxY;
+};
 
 #endif

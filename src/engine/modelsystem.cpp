@@ -3,6 +3,7 @@
 #include <string>
 #include "ifilesystem.h"
 #include "ilogger.h"
+#include "render.h"
 #include "gpu_buffer.h"
 #include "shader.h"
 #include "shadersystem.h"
@@ -308,6 +309,11 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 			g_staticVertexLayout, sizeof(g_staticVertexLayout) / sizeof(g_staticVertexLayout[0]));
 	}
 
+	glFrontFace(GL_CCW);
+
+	glDepthFunc(GL_ALWAYS);
+
+	g_pRenderDevice->SetCullFace(true);
 	g_pRenderDevice->SetDepthTest(true);
 	g_pRenderDevice->SetDepthWrite(true);
 
@@ -324,8 +330,8 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 	{
 		g_pRenderDevice->SetBlending(false);
 
-		glm::vec4 color = glm::vec4(1.f, 1.f, 1.f, 1.f);
-		g_pShaderSystem->SetUniformFloat4(g_litShader, UNIFORM_CUSTOM_COLOR, glm::value_ptr(color));
+		//glm::vec4 color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+		//g_pShaderSystem->SetUniformFloat4(g_litShader, UNIFORM_CUSTOM_COLOR, glm::value_ptr(color));
 	}
 
 	g_pRenderDevice->SetVerticesBuffer(m_data.vb);
@@ -358,9 +364,12 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 	//model = glm::translate(model, pos);
 
 	glm::mat4 mvp = glm::identity<glm::mat4>();
-	mvp = /*g_renderView.proj * g_renderView.view **/ model;
+	mvp = g_pRender->GetProjectionMatrix() * g_pRender->GetViewMatrix() * model;
 	g_pShaderSystem->SetUniformMatrix(g_litShader, UNIFORM_MVP_MATRIX, &mvp[0]);
 	
+	g_pTexturesManager->SetTexture(0, m_AlbedoTexture);
+	g_pShaderSystem->SetUniformSampler(g_litShader, SAMPLER_ALBEDO, 0);
+
 	g_pRenderDevice->DrawArrays(PT_TRIANGLES, 0, m_data.vbcount);
 
 #if 0

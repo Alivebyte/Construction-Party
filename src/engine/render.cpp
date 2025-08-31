@@ -50,6 +50,11 @@ void APIENTRY GL_DebugOutput(GLenum source,
 	GetLogger()->Print("OpenGL: %stype = 0x%x, severity = 0x%x, message = %s\n",
 		(type == GL_DEBUG_TYPE_ERROR_ARB ? "** GL ERROR ** " : ""),
 		type, severity, message);
+
+	if (type == GL_DEBUG_TYPE_ERROR_ARB)
+	{
+		bool debug = true;
+	}
 }
 
 Render* g_pRender = nullptr;
@@ -60,6 +65,8 @@ Render::Render() :
 	m_pStretchedPicVBuf(nullptr),
 	m_bUsingVAO(false)
 {
+	m_ViewMatrix = glm::identity<glm::mat4>();
+	m_ProjectionMatrix = glm::identity<glm::mat4>();
 }
 
 Render::~Render()
@@ -281,6 +288,16 @@ void Render::SetCullFace(bool enable)
 ITexture2D* Render::LoadTexture2D(const char* texturename, bool useMipmaps)
 {
 	return (ITexture2D*)g_pTexturesManager->LoadTexture2D(texturename, useMipmaps);
+}
+
+void Render::SetViewMatrix(const glm::mat4& matView)
+{
+	m_ViewMatrix = matView;
+}
+
+void Render::SetProjectionMatrix(const glm::mat4& matProjection)
+{
+	m_ProjectionMatrix = matProjection;
 }
 
 void Render::SetShader(const IShader* shader)

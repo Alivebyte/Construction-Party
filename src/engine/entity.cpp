@@ -53,7 +53,6 @@ class ClientGameAPI : public IClientGameAPI
 {
 public:
 	// Inherited via IClientGameAPI
-	void GetMousePos(int* pX, int* pY);
 	void SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz) override;
 	Model* LoadModel(const char* pFilename) override;
 };
@@ -61,12 +60,6 @@ public:
 Model* ClientGameAPI::LoadModel(const char* pFilename)
 {
 	return g_pModelSystem->LoadModel(pFilename);
-}
-
-void ClientGameAPI::GetMousePos(int* pX, int* pY)
-{
-	if (pX) *pX = g_mousePoxX;
-	if (pY) *pY = g_mousePoxY;
 }
 
 void ClientGameAPI::SetViewOrigin(float x, float y, float z, float dirx, float diry, float dirz)
@@ -81,3 +74,36 @@ IClientGameAPI* GetClientGameAPI()
 	return &clientGameAPI;
 }
 
+///////////////////////////////////////////////////////////
+
+#include "world.h"
+
+class ServerGameAPI : public IServerGameAPI
+{
+public:
+	// Inherited via IServerGameAPI
+	IEntity* CreateEntity(const char* pClassname) override;
+	void AddEntity(IEntity* pEntity) override;
+	IEntity* FindEntityByClassname(const char* classname) override;
+};
+
+IEntity* ServerGameAPI::CreateEntity(const char* pClassname)
+{
+	return g_World.CreateEntity(pClassname);
+}
+
+void ServerGameAPI::AddEntity(IEntity* pEntity)
+{
+	g_World.AddEntity(pEntity);
+}
+
+IEntity* ServerGameAPI::FindEntityByClassname(const char* classname)
+{
+	return g_World.FindEntityByClassname(classname);
+}
+
+IServerGameAPI* GetServerGameAPI()
+{
+	static ServerGameAPI serverGameAPI;
+	return &serverGameAPI;
+}

@@ -54,6 +54,9 @@ public:
 	virtual void SetScissor(int x, int y, int width, int height) = 0;
 	virtual void SetViewport(int x, int y, int w, int h) = 0;
 
+	virtual void SetViewMatrix(const glm::mat4& matView) = 0;
+	virtual void SetProjectionMatrix(const glm::mat4& matProjection) = 0;
+
 	virtual void DrawIndexed(PrimitiveType mode, uint32_t count, bool is16bitIndices, const void* indices) = 0;
 };
 
