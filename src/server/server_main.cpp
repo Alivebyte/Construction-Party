@@ -38,23 +38,25 @@ void ServerGame::Init()
 
 	// Create player
 	g_pPlayer = GetServerGameAPI()->CreateEntity("player");
-	g_pPlayer->SetOrigin(glm::vec3(-2.0f,1.0f, -2.0f));
+	g_pPlayer->SetOrigin(glm::vec3(1.45480740f, 1.86708641f, -1.65813649f));
 
 	// Create an test entity
-	BaseEntity* pSceneEntity1 = new BaseEntity();
+	PhysicsEntity* pSceneEntity1 = new PhysicsEntity();
 	pSceneEntity1->SetModel("data/models/scene_table.obj");
+	pSceneEntity1->CreateFromModel();
 	pSceneEntity1->Spawn();
 	GetServerGameAPI()->AddEntity(pSceneEntity1);
 
-	BaseEntity* pSceneEntity2 = new BaseEntity();
+	PhysicsEntity* pSceneEntity2 = new PhysicsEntity();
 	pSceneEntity2->SetModel("data/models/scene_walls.obj");
+	pSceneEntity2->CreateFromModel();
 	pSceneEntity2->Spawn();
 	GetServerGameAPI()->AddEntity(pSceneEntity2);
 
 	const char* figures[] =
 	{
 		"data/models/figure_box.obj",
-		"data/models/figure_cone.obj",
+		//"data/models/figure_cone.obj", NO SUPPORTED :(
 		"data/models/figure_sphere.obj",
 		"data/models/figure_cylinder.obj",
 	};
@@ -63,13 +65,28 @@ void ServerGame::Init()
 
 	for (int i = 0; i < sizeof(figures) / sizeof(figures[0]); i++)
 	{
-		BaseEntity* pFigure = new BaseEntity();
+		PhysicsEntity* pFigure = new PhysicsEntity();
 		pFigure->SetOrigin(glm::vec3(step, 1.5f, 0.0f));
 		pFigure->SetModel(figures[i]);
+	
+		if (strstr(figures[i], "box"))
+			pFigure->CreateBox(0.2f);
+		else if (strstr(figures[i], "sphere"))
+			pFigure->CreateSphere(0.3f);
+		else if (strstr(figures[i], "cylinder"))
+			pFigure->CreateCylinder(0.2f, 0.1f);
+
 		pFigure->Spawn();
 		GetServerGameAPI()->AddEntity(pFigure);
-		step += 1.0f;
+		step += 0.4f;
 	}
+
+	//PhysicsEntity* pPhysicsEntity = new PhysicsEntity();
+	//pPhysicsEntity->SetOrigin(glm::vec3(0.0f, 2.0f, 0.0f));
+	//pPhysicsEntity->CreateBox(0.2f);
+	//pPhysicsEntity->Spawn();
+	//pPhysicsEntity->SetModel("data/models/figure_box.obj");
+	//GetServerGameAPI()->AddEntity(pPhysicsEntity);
 }
 
 void ServerGame::Update()

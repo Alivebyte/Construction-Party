@@ -154,20 +154,6 @@ public:
 	}
 };
 
-inline glm::vec3 ToGLM(JPH::RVec3Arg v)
-{
-	return glm::vec3((float)v.GetX(), (float)v.GetY(), (float)v.GetZ());
-}
-
-inline glm::vec3 ToGLM(JPH::ColorArg c)
-{
-	return glm::vec3(
-		(float)c.r / 255.0f,
-		(float)c.g / 255.0f,
-		(float)c.b / 255.0f
-	);
-}
-
 class MyDebugRenderer : public JPH::DebugRenderer
 {
 	// Inherited via DebugRenderer
@@ -272,11 +258,15 @@ void PhysicsWorld::Init()
 
 	// Registering a contact listener
 	g_JPHPhysicsSystem.SetContactListener(&g_MyContactListener);
+
+	g_JPHPhysicsSystem.SetGravity(JPH::Vec3(0.0f, -2.0f, 0.0f));
 }
 
 void PhysicsWorld::Update(float deltaTime, int collisionSteps)
 {
 	g_JPHPhysicsSystem.Update(deltaTime, collisionSteps, g_pTempAllocator, g_pJobSystemThreadPool);
+
+	DebugDraw();
 }
 
 void PhysicsWorld::Shutdown()
@@ -306,6 +296,6 @@ void PhysicsWorld::Shutdown()
 void PhysicsWorld::DebugDraw()
 {
 	JPH::BodyManager::DrawSettings settings;
-	g_JPHPhysicsSystem.DrawBodies(settings, JPH::DebugRenderer::sInstance);
-	g_JPHPhysicsSystem.DrawConstraints(JPH::DebugRenderer::sInstance);
+	//g_JPHPhysicsSystem.DrawBodies(settings, JPH::DebugRenderer::sInstance);
+	//g_JPHPhysicsSystem.DrawConstraints(JPH::DebugRenderer::sInstance);
 }

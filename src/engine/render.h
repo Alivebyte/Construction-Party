@@ -72,6 +72,9 @@ private:
 	GPUBuffer* m_pStretchedPicVBuf;
 
 	bool m_bUsingVAO;
+
+	// Inherited via IRender
+	const StaticMeshVertex* GetModelVertices(Model* pModel, int* pNumVertices) override;
 };
 
 extern Render* g_pRender;

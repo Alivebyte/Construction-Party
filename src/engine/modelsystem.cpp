@@ -251,6 +251,8 @@ void Model::LoadObj(const char* filename)
 		//m_boundingBox.max = glm::max(m_boundingBox.max, vertex);
 	}
 
+	m_Vertices = vertices;
+
 	m_data.vb = g_pRenderDevice->CreateVertexBuffer(vertices.data(), (int)sizeof(StaticMeshVertex) * (int)vertices.size());
 	m_data.vbcount = vertices.size();
 

@@ -135,81 +135,83 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 	}
 	else
 	{
-		SDL_SetRelativeMouseMode(SDL_TRUE);
+	//	SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 
 	// UserCmd stuff
 
+	m_Camera.LookAt(glm::vec3(-0.531249285f, -0.453990191f, 0.715309143f));
+
 	if (!m_bShowMenu)
 	{
-		static UserCmd userCmd;
-		static bool firstTime = true;
-		if (firstTime)
-		{
-			memset(&userCmd, 0, sizeof(userCmd));
-			firstTime = false;
-		}
+		//static UserCmd userCmd;
+		//static bool firstTime = true;
+		//if (firstTime)
+		//{
+		//	memset(&userCmd, 0, sizeof(userCmd));
+		//	firstTime = false;
+		//}
 
-		if (pEvent->type == SDL_KEYDOWN)
-		{
-			if (pEvent->key.keysym.sym == SDLK_w)
-				userCmd.walkForward = true;
-			if (pEvent->key.keysym.sym == SDLK_s)
-				userCmd.walkBackward = true;
-			if (pEvent->key.keysym.sym == SDLK_a)
-				userCmd.strafeLeft = true;
-			if (pEvent->key.keysym.sym == SDLK_d)
-				userCmd.strafeRight = true;
-		}
-		else if (pEvent->type == SDL_KEYUP)
-		{
-			if (pEvent->key.keysym.sym == SDLK_w)
-				userCmd.walkForward = false;
-			if (pEvent->key.keysym.sym == SDLK_s)
-				userCmd.walkBackward = false;
-			if (pEvent->key.keysym.sym == SDLK_a)
-				userCmd.strafeLeft = false;
-			if (pEvent->key.keysym.sym == SDLK_d)
-				userCmd.strafeRight = false;
-		}
+		//if (pEvent->type == SDL_KEYDOWN)
+		//{
+		//	if (pEvent->key.keysym.sym == SDLK_w)
+		//		userCmd.walkForward = true;
+		//	if (pEvent->key.keysym.sym == SDLK_s)
+		//		userCmd.walkBackward = true;
+		//	if (pEvent->key.keysym.sym == SDLK_a)
+		//		userCmd.strafeLeft = true;
+		//	if (pEvent->key.keysym.sym == SDLK_d)
+		//		userCmd.strafeRight = true;
+		//}
+		//else if (pEvent->type == SDL_KEYUP)
+		//{
+		//	if (pEvent->key.keysym.sym == SDLK_w)
+		//		userCmd.walkForward = false;
+		//	if (pEvent->key.keysym.sym == SDLK_s)
+		//		userCmd.walkBackward = false;
+		//	if (pEvent->key.keysym.sym == SDLK_a)
+		//		userCmd.strafeLeft = false;
+		//	if (pEvent->key.keysym.sym == SDLK_d)
+		//		userCmd.strafeRight = false;
+		//}
 
-		int posX = 0, posY = 0;
-		SDL_GetMouseState(&posX, &posY);
+		//int posX = 0, posY = 0;
+		//SDL_GetMouseState(&posX, &posY);
 
-		int width = 0, height = 0;
-		SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
+		//int width = 0, height = 0;
+		//SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
 
-		int centerX = width / 2;
-		int centerY = height / 2;
+		//int centerX = width / 2;
+		//int centerY = height / 2;
 
-		int deltaX = posX - centerX;
-		int deltaY = posY - centerY;
+		//int deltaX = posX - centerX;
+		//int deltaY = posY - centerY;
 
-		SDL_WarpMouseInWindow(GetEngine()->GetWindow(), centerX, centerY);
+		//SDL_WarpMouseInWindow(GetEngine()->GetWindow(), centerX, centerY);
 	
-		userCmd.mouseX = (int16_t)posX;
-		userCmd.mouseY = (int16_t)posY;
+		//userCmd.mouseX = (int16_t)posX;
+		//userCmd.mouseY = (int16_t)posY;
 
-		userCmd.deltaX = (int16_t)deltaX;
-		userCmd.deltaY = (int16_t)deltaY;
+		//userCmd.deltaX = (int16_t)deltaX;
+		//userCmd.deltaY = (int16_t)deltaY;
 
-		// calculate yaw and pitch
-		static float yaw = 0.0f, pitch = 0.0f;
+		//// calculate yaw and pitch
+		//static float yaw = 0.0f, pitch = 0.0f;
 
-		yaw += (float)deltaX * g_options_config.m_mouse_sensitive;
-		pitch += (float)-deltaY * g_options_config.m_mouse_sensitive;
-		if (pitch >= 89.0f)
-			pitch = 89.0f;
-		else if (pitch <= -89.0f)
-			pitch = -89.0f;
+		//yaw += (float)deltaX * g_options_config.m_mouse_sensitive;
+		//pitch += (float)-deltaY * g_options_config.m_mouse_sensitive;
+		//if (pitch >= 89.0f)
+		//	pitch = 89.0f;
+		//else if (pitch <= -89.0f)
+		//	pitch = -89.0f;
 
-		m_Camera.SetYawPitch(yaw, pitch);
+		//m_Camera.SetYawPitch(yaw, pitch);
 
-		userCmd.dirx = m_Camera.GetDirection().x;
-		userCmd.diry = m_Camera.GetDirection().y;
-		userCmd.dirz = m_Camera.GetDirection().z;
+		//userCmd.dirx = m_Camera.GetDirection().x;
+		//userCmd.diry = m_Camera.GetDirection().y;
+		//userCmd.dirz = m_Camera.GetDirection().z;
 
-		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
+		//GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
 	}
 }
 

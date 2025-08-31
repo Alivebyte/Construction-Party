@@ -309,6 +309,16 @@ void Render::SetProjectionMatrix(const glm::mat4& matProjection)
 	m_ProjectionMatrix = matProjection;
 }
 
+const StaticMeshVertex* Render::GetModelVertices(Model* pModel, int* pNumVertices)
+{
+	SDL_assert(pModel);
+
+	if (pNumVertices)
+		*pNumVertices = (int)pModel->m_Vertices.size();
+
+	return pModel->m_Vertices.data();
+}
+
 void Render::SetShader(const IShader* shader)
 {
 	g_pShaderSystem->SetShader((const Shader*)shader);

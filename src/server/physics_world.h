@@ -1,6 +1,8 @@
 #ifndef PHYSICS_WORLD_H
 #define PHYSICS_WORLD_H
 
+#include <glm/glm.hpp>
+
 // Jolt core includes
 #include <Jolt/Jolt.h>
 
@@ -13,8 +15,29 @@
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/Shape/MeshShape.h>
+#include <Jolt/Physics/Collision/Shape/CylinderShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
+
+inline JPH::RVec3Arg ToJPH(const glm::vec3& v)
+{
+	return JPH::RVec3Arg((float)v.x, (float)v.y, (float)v.z);
+}
+
+inline glm::vec3 ToGLM(JPH::RVec3Arg v)
+{
+	return glm::vec3((float)v.GetX(), (float)v.GetY(), (float)v.GetZ());
+}
+
+inline glm::vec3 ToGLM(JPH::ColorArg c)
+{
+	return glm::vec3(
+		(float)c.r / 255.0f,
+		(float)c.g / 255.0f,
+		(float)c.b / 255.0f
+	);
+}
 
 // Yeah I'm lazy so I'll do it here, just what you'd expect from typical C-style thing
 

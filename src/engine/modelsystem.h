@@ -3,18 +3,13 @@
 
 #include <vector>
 
+#include "render_shared.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 class GPUBuffer;
 class Texture2D;
-
-struct StaticMeshVertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texcoord;
-};
 
 struct ModelData_t
 {
@@ -26,8 +21,11 @@ struct ModelData_t
 
 void ReleaseModelData(ModelData_t& data);
 
+class Render;
+
 class Model
 {
+	friend class Render;
 public:
 	Model();
 	~Model();
@@ -40,6 +38,7 @@ public:
 	//BoundingBox GetBoundingBox() { return m_boundingBox; } 
 
 private:
+	std::vector<StaticMeshVertex> m_Vertices;
 	ModelData_t m_data;
 	//BoundingBox m_boundingBox;
 	Texture2D* m_AlbedoTexture;

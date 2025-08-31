@@ -5,6 +5,7 @@
 #include "render_shared.h"
 
 class IShader;
+class Model;
 
 class ITexture2D
 {
@@ -59,6 +60,8 @@ public:
 
 	virtual void SetViewMatrix(const glm::mat4& matView) = 0;
 	virtual void SetProjectionMatrix(const glm::mat4& matProjection) = 0;
+
+	virtual const StaticMeshVertex* GetModelVertices(Model* pModel, int* pNumVertices) = 0;
 
 	virtual void DrawIndexed(PrimitiveType mode, uint32_t count, bool is16bitIndices, const void* indices) = 0;
 };
