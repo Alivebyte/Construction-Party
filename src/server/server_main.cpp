@@ -50,6 +50,26 @@ void ServerGame::Init()
 	pSceneEntity2->SetModel("data/models/scene_walls.obj");
 	pSceneEntity2->Spawn();
 	GetServerGameAPI()->AddEntity(pSceneEntity2);
+
+	const char* figures[] =
+	{
+		"data/models/figure_box.obj",
+		"data/models/figure_cone.obj",
+		"data/models/figure_sphere.obj",
+		"data/models/figure_cylinder.obj",
+	};
+
+	float step = 0.0f;
+
+	for (int i = 0; i < sizeof(figures) / sizeof(figures[0]); i++)
+	{
+		BaseEntity* pFigure = new BaseEntity();
+		pFigure->SetOrigin(glm::vec3(step, 1.5f, 0.0f));
+		pFigure->SetModel(figures[i]);
+		pFigure->Spawn();
+		GetServerGameAPI()->AddEntity(pFigure);
+		step += 1.0f;
+	}
 }
 
 void ServerGame::Update()
