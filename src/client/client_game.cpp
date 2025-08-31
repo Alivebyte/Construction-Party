@@ -177,7 +177,7 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 		SDL_GetMouseState(&posX, &posY);
 
 		int width = 0, height = 0;
-		SDL_GetWindowSize(GetEngine()->GetWindow(), &height, &height);
+		SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
 
 		int centerX = width / 2;
 		int centerY = height / 2;
@@ -187,8 +187,8 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 
 		SDL_WarpMouseInWindow(GetEngine()->GetWindow(), centerX, centerY);
 	
-		userCmd.mouseX = (uint16_t)posX;
-		userCmd.mouseY = (uint16_t)posY;
+		userCmd.mouseX = (int16_t)posX;
+		userCmd.mouseY = (int16_t)posY;
 
 		userCmd.deltaX = (int16_t)deltaX;
 		userCmd.deltaY = (int16_t)deltaY;
