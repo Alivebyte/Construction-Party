@@ -38,6 +38,9 @@ public:
 
 	uint32_t GetHandle() { return m_handle; }
 
+	int GetWidth() { return m_width; }
+	int GetHeight() { return m_height; }
+
 private:
 	std::string m_textureFileName;
 	PixelFormat m_pf;

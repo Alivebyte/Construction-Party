@@ -18,6 +18,10 @@ list(APPEND CLIENT_SOURCES
 	imgui_impl_sdl2.cpp
 	imgui_impl_sdl2.h
 
+	# Gui
+	gameui.cpp
+	gameui.h
+
 	# Game shared
 	${GAME_SHARED_SOURCE_DIR}/baseentity.cpp
 	${GAME_SHARED_SOURCE_DIR}/baseentity.h

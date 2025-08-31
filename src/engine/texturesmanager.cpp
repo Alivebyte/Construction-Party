@@ -63,7 +63,7 @@ TexturesManager::~TexturesManager()
 
 void TexturesManager::Init()
 {
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(false);
 
 	m_notex = LoadTexture2D("data/textures/notex.png", true);
 	if (!m_notex) {

@@ -10,6 +10,9 @@ class ITexture2D
 {
 public:
 	virtual ~ITexture2D() {}
+
+	virtual int GetWidth() = 0;
+	virtual int GetHeight() = 0;
 };
 
 class IGPUBuffer

@@ -3,6 +3,8 @@
 #include "ientity.h"
 #include "irender.h"
 
+#include "gameui.h"
+
 #include <SDL.h>
 
 #include <imgui.h>
@@ -31,10 +33,13 @@ void ClientGame::Init()
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplSDL2_InitForOther(GetEngine()->GetWindow());
 	ImGui_ImplEngine_Init();
+
+	g_GameUI.Init();
 }
 
 void ClientGame::Shutdown()
@@ -93,6 +98,8 @@ void ClientGame::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
+	//g_GameUI.Render();
+
 	RenderOverlay();
 
 	ImGui::Render();
@@ -101,18 +108,29 @@ void ClientGame::Render()
 
 void ClientGame::RenderOverlay()
 {
+	float height = 8.0f;
+
 	ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
 
 	static char szBuffer[256];
 	sprintf(szBuffer, "FPS: %.2f", ImGui::GetIO().Framerate);
-	pDrawList->AddText(ImVec2(8.0f, 8.0f), 0xffffffff, szBuffer);
+	pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
+	height += 12.0f;
+
+	int x = 0, y = 0;
+	SDL_GetMouseState(&x, &y);
+
+	sprintf(szBuffer, "mouse pos: %d %d", x, y);
+	pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
+	height += 12.0f;
 
 	IEntity* pEntity = GetServerGameAPI()->FindEntityByClassname("player");
 	if (pEntity)
 	{
 		sprintf(szBuffer, "pos: %.2f %.2f %.2f", pEntity->GetOrigin().x, pEntity->GetOrigin().y, pEntity->GetOrigin().z);
-		pDrawList->AddText(ImVec2(8.0f, 20.0f), 0xffffffff, szBuffer);
+		pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
 	}
+
 }
 
 // Client Export
