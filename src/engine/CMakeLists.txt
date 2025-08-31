@@ -43,12 +43,16 @@ list(APPEND ENGINE_SOURCES
 	shadersystem.cpp
 	modelsystem.h
 	modelsystem.cpp
+	debugrender.h
+	debugrender.cpp
 	# Sound System
 	soundsystem.cpp
 	soundsystem.h
 
 )
 add_library(${PROJECT_NAME} SHARED ${ENGINE_SOURCES})
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DENGINE_EXPORTS)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${MINIAUDIO_INCLUDE_DIRS})
 

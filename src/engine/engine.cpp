@@ -1,4 +1,3 @@
-#define ENGINE_EXPORTS
 #include "engine.h"
 #include "ifilesystem.h"
 #include "ilogger.h"
@@ -11,6 +10,7 @@
 #include "modelsystem.h"
 #include "world.h"
 #include "soundsystem.h"
+#include "debugrender.h"
 #include <stdio.h>
 
 #define WINDOW_TITLE "Construction Party"
@@ -146,6 +146,8 @@ void Engine::Loop()
 		g_World.Render();
 
 		g_pClientGame->Render();
+
+		g_pDebugRender->RenderFrame();
 
 		// Present the backbuffer to screen
 		g_pRender->Present();

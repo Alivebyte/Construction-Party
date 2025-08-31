@@ -1,4 +1,3 @@
-#define ENGINE_EXPORTS
 #define MINIAUDIO_IMPLEMENTATION
 #include "soundsystem.h"
 #include "ilogger.h"

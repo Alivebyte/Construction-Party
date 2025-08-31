@@ -1,5 +1,8 @@
 #include "ilogger.h"
 #include "physics_world.h"
+#include "debugrender.h"
+
+#include <Jolt/Renderer/DebugRenderer.h>
 
 // Callback for traces
 static void TraceImpl(const char* inFMT, ...)
@@ -151,6 +154,57 @@ public:
 	}
 };
 
+inline glm::vec3 ToGLM(JPH::RVec3Arg v)
+{
+	return glm::vec3((float)v.GetX(), (float)v.GetY(), (float)v.GetZ());
+}
+
+inline glm::vec3 ToGLM(JPH::ColorArg c)
+{
+	return glm::vec3(
+		(float)c.r / 255.0f,
+		(float)c.g / 255.0f,
+		(float)c.b / 255.0f
+	);
+}
+
+class MyDebugRenderer : public JPH::DebugRenderer
+{
+	// Inherited via DebugRenderer
+	void DrawLine(JPH::RVec3Arg inFrom, JPH::RVec3Arg inTo, JPH::ColorArg inColor) override
+	{
+		g_pDebugRender->DrawLine(ToGLM(inFrom), ToGLM(inTo), ToGLM(inColor));
+	}
+
+	void DrawTriangle(JPH::RVec3Arg inV1, JPH::RVec3Arg inV2, JPH::RVec3Arg inV3, JPH::ColorArg inColor, ECastShadow inCastShadow) override
+	{
+		glm::vec3 color = ToGLM(inColor);
+		g_pDebugRender->DrawLine(ToGLM(inV1), ToGLM(inV2), color);
+		g_pDebugRender->DrawLine(ToGLM(inV2), ToGLM(inV3), color);
+		g_pDebugRender->DrawLine(ToGLM(inV3), ToGLM(inV1), color);
+	}
+
+	// Inherited via DebugRenderer
+	Batch CreateTriangleBatch(const Triangle* inTriangles, int inTriangleCount) override
+	{
+		return Batch();
+	}
+
+	Batch CreateTriangleBatch(const Vertex* inVertices, int inVertexCount, const JPH::uint32* inIndices, int inIndexCount) override
+	{
+		return Batch();
+	}
+
+	void DrawGeometry(JPH::RMat44Arg inModelMatrix, const JPH::AABox& inWorldSpaceBounds, float inLODScaleSq, JPH::ColorArg inModelColor, const GeometryRef& inGeometry, ECullMode inCullMode, ECastShadow inCastShadow, EDrawMode inDrawMode) override
+	{
+	}
+
+	void DrawText3D(JPH::RVec3Arg inPosition, const JPH::string_view& inString, JPH::ColorArg inColor, float inHeight) override
+	{
+	}
+
+};
+
 // JPH Globals
 static JPH::TempAllocatorImpl* g_pTempAllocator = nullptr;
 static JPH::JobSystemThreadPool* g_pJobSystemThreadPool = nullptr;
@@ -164,6 +218,7 @@ static BPLayerInterfaceImpl g_BPLayerInterfaceImpl;
 static ObjectVsBroadPhaseLayerFilterImpl g_ObjectVsBroadPhaseLayerFilterImpl;
 static MyContactListener g_MyContactListener;
 static MyBodyActivationListener g_MyBodyActivationListener;
+static MyDebugRenderer g_MyDebugRenderer;
 
 // The Physics World Global
 PhysicsWorld g_PhysicsWorld;
@@ -189,6 +244,9 @@ void PhysicsWorld::Init()
 
 	// Register all physics types with the factory and install their collision handlers with the CollisionDispatch class.
 	JPH::RegisterTypes();
+
+	// Set a our debug renderer to Jolt
+	JPH::DebugRenderer::sInstance = &g_MyDebugRenderer;
 
 	// We need a temp allocator for temporary allocations during the physics update. We're
 	// pre-allocating 10 MB to avoid having to do allocations during the physics update.
@@ -231,4 +289,11 @@ void PhysicsWorld::Shutdown()
 	// Destroy the factory
 	delete JPH::Factory::sInstance;
 	JPH::Factory::sInstance = nullptr;
+}
+
+void PhysicsWorld::DebugDraw()
+{
+	JPH::BodyManager::DrawSettings settings;
+	g_JPHPhysicsSystem.DrawBodies(settings, JPH::DebugRenderer::sInstance);
+	g_JPHPhysicsSystem.DrawConstraints(JPH::DebugRenderer::sInstance);
 }

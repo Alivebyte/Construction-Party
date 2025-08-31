@@ -385,7 +385,7 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 
 	BoundingBox bbox = m_boundingBox;
 	TransformBoundingBox(bbox, model);
-	g_debugRender->DrawBoundingBox(bbox, glm::vec3(1.0f));
+	g_pDebugRender->DrawBoundingBox(bbox, glm::vec3(1.0f));
 #endif
 }
 

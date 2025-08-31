@@ -4,6 +4,7 @@
 #include "texturesmanager.h"
 #include "shadersystem.h"
 #include "modelsystem.h"
+#include "debugrender.h"
 
 static GLuint g_VAO = 0;
 
@@ -129,6 +130,10 @@ void Render::Init(SDL_Window* pWindow)
 	// Create model system
 	g_pModelSystem = new ModelSystem();
 
+	// Create debug render
+	g_pDebugRender = new DebugRender();
+	g_pDebugRender->Initialize();
+
 	// Create stretched picture buffer
 	m_pStretchedPicVBuf = g_pRenderDevice->CreateVertexBuffer(nullptr, MAX_STRETCH_VX, true);
 
@@ -151,6 +156,10 @@ void Render::Shutdown()
 
 	delete m_pStretchedPicVBuf;
 	m_pStretchedPicVBuf = nullptr;
+
+	g_pDebugRender->Shutdown();
+	delete g_pDebugRender;
+	g_pDebugRender = nullptr;
 
 	g_pModelSystem->Shutdown();
 	delete g_pModelSystem;

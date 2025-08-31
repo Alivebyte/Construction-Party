@@ -59,6 +59,8 @@ public:
 
 	void Init();
 	void Shutdown();
+
+	void DebugDraw();
 };
 
 extern PhysicsWorld g_PhysicsWorld;
