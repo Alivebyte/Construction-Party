@@ -263,7 +263,7 @@ void PhysicsWorld::Init()
 	phys_limits.maxBodyPairs = 1024;
 
 	// Now we can create the physics system.
-	g_JPHPhysicsSystem.Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, 
+	g_JPHPhysicsSystem.Init(phys_limits.maxBodies, phys_limits.numBodyMutexes, phys_limits.maxBodyPairs, phys_limits.maxContactConstraints, 
 		g_BPLayerInterfaceImpl, g_ObjectVsBroadPhaseLayerFilterImpl, 
 		g_ObjectLayerPairFilterImpl);
 

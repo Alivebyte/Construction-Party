@@ -17,24 +17,24 @@
 #include <Jolt/Physics/Body/BodyActivationListener.h>
 
 // Yeah I'm lazy so I'll do it here, just what you'd expect from typical C-style thing
-#define uint uint16_t
+
 
 typedef struct phys_limits_s
 {
-	uint maxBodies;
-	uint numBodyMutexes;
-	uint maxBodyPairs;
-	uint maxContactConstraints;
+	JPH::uint maxBodies;
+	JPH::uint numBodyMutexes;
+	JPH::uint maxBodyPairs;
+	JPH::uint maxContactConstraints;
 } phys_limits_t;
 
 
 // Disable common warnings triggered by Jolt, you can use JPH_SUPPRESS_WARNING_PUSH / JPH_SUPPRESS_WARNING_POP to store and restore the warning state
 JPH_SUPPRESS_WARNINGS
 
-const JPH::uint cMaxBodies = 1024;
-const JPH::uint cNumBodyMutexes = 0;
-const JPH::uint cMaxBodyPairs = 1024;
-const JPH::uint cMaxContactConstraints = 1024;
+//const JPH::uint cMaxBodies = 1024;
+//const JPH::uint cNumBodyMutexes = 0;
+//const JPH::uint cMaxBodyPairs = 1024;
+//const JPH::uint cMaxContactConstraints = 1024;
 
 // Layer that objects can be in, determines which other objects it can collide with
 // Typically you at least want to have 1 layer for moving bodies and 1 layer for static bodies, but you can have more
