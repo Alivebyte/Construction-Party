@@ -71,8 +71,9 @@ public:
 
 	void Init();
 	void Update(float deltaTime, int collisionSteps = 1);
+	JPH::BodyInterface* GetBodyInterface() { return &g_JPHPhysicsSystem.GetBodyInterface(); };
 	void Shutdown();
-
+	
 	void DebugDraw();
 };
 

@@ -22,6 +22,8 @@ list(APPEND SERVER_SOURCES
 	# Physics
 	physics_world.cpp
 	physics_world.h
+	physics_body.h
+	physics_body.cpp
 	
 	# Entities
 	player.cpp
