@@ -41,10 +41,15 @@ void ServerGame::Init()
 	g_pPlayer->SetOrigin(glm::vec3(-2.0f,1.0f, -2.0f));
 
 	// Create an test entity
-	BaseEntity* pTestEntity = new BaseEntity();
-	pTestEntity->SetModel("data/models/test.obj");
-	pTestEntity->Spawn();
-	GetServerGameAPI()->AddEntity(pTestEntity);
+	BaseEntity* pSceneEntity1 = new BaseEntity();
+	pSceneEntity1->SetModel("data/models/scene_table.obj");
+	pSceneEntity1->Spawn();
+	GetServerGameAPI()->AddEntity(pSceneEntity1);
+
+	BaseEntity* pSceneEntity2 = new BaseEntity();
+	pSceneEntity2->SetModel("data/models/scene_walls.obj");
+	pSceneEntity2->Spawn();
+	GetServerGameAPI()->AddEntity(pSceneEntity2);
 }
 
 void ServerGame::Update()

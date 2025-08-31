@@ -310,9 +310,7 @@ void Model::Draw(const glm::mat4& model, bool isTransparent /*= false*/)
 	}
 
 	glFrontFace(GL_CCW);
-
-	// ...hack hack hack...
-	glDepthFunc(GL_ALWAYS);
+	glDepthFunc(GL_LESS);
 
 	g_pRenderDevice->SetCullFace(true);
 	g_pRenderDevice->SetDepthTest(true);

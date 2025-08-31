@@ -189,8 +189,8 @@ void Render::Present(bool vsync)
 
 void Render::ResetStates()
 {
-	g_pRenderDevice->SetDepthTest(false);
-	g_pRenderDevice->SetDepthWrite(false);
+	g_pRenderDevice->SetDepthTest(true);
+	g_pRenderDevice->SetDepthWrite(true);
 	g_pRenderDevice->SetStencilTest(false);
 	g_pRenderDevice->SetScissorTest(false);
 	g_pRenderDevice->SetCullFace(false);
