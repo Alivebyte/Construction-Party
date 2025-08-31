@@ -115,6 +115,9 @@ void Engine::Loop()
 
 			// Client event handling
 			g_pClientGame->OnEvent(&event);
+
+			// Server update handling
+			g_pServerGame->Update();
 		}
 	}
 

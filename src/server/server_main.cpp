@@ -54,6 +54,8 @@ void ServerGame::Update()
 void ServerGame::Simulate()
 {
 	// TODO: Simulate physics
+
+
 }
 
 void ServerGame::Shutdown()
