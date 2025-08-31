@@ -22,7 +22,10 @@ public:
 	// Inherited via IServerGame
 	void Init() override;
 	void Shutdown() override;
+	void Update() override;
 	void SendUserCmd(const UserCmd* pUserCmd) override;
+protected:
+	void Simulate();
 };
 
 static ServerGame s_ServerGame;
@@ -41,6 +44,16 @@ void ServerGame::Init()
 	pTestEntity->SetModel("data/models/test.obj");
 	pTestEntity->Spawn();
 	GetServerGameAPI()->AddEntity(pTestEntity);
+}
+
+void ServerGame::Update()
+{
+	Simulate();
+}
+
+void ServerGame::Simulate()
+{
+	// TODO: Simulate physics
 }
 
 void ServerGame::Shutdown()
