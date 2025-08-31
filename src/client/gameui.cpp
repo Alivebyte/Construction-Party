@@ -28,7 +28,8 @@ GameUI::GameUI() :
 	m_pCursorTex(nullptr),
 	m_pStarTex(nullptr),
 	m_pButtonTex(nullptr),
-	m_pBackgroundTex(nullptr)
+	m_pBackgroundTex(nullptr),
+	m_pTutorialTex(nullptr)
 {
 }
 
@@ -38,6 +39,7 @@ GameUI::~GameUI()
 	m_pStarTex = nullptr;
 	m_pButtonTex = nullptr;
 	m_pBackgroundTex = nullptr;
+	m_pTutorialTex = nullptr;
 }
 
 void GameUI::Init()
@@ -46,6 +48,7 @@ void GameUI::Init()
 	m_pStarTex = GetRender()->LoadTexture2D("data/textures/ui/ui_star.png");
 	m_pButtonTex = GetRender()->LoadTexture2D("data/textures/ui/ui_button.png");
 	m_pBackgroundTex = GetRender()->LoadTexture2D("data/textures/ui/ui_background.png");
+	m_pTutorialTex = GetRender()->LoadTexture2D("data/textures/ui/ui_tutorial.png");
 }
 
 void GameUI::RenderMainMenu()
@@ -69,16 +72,16 @@ void GameUI::RenderMainMenu()
 		{
 			GetLogger()->Print("New Game ...");
 		}
-		
+
 		ImGui::SetCursorPosX(50);
-		
+
 		if (ImGui::ImageButtonWithText("set_game_btn", (ImTextureID)m_pButtonTex, "Settings", ImVec2(m_pButtonTex->GetWidth(), m_pButtonTex->GetHeight())))
 		{
 			g_ui_menu_options.open();
 		}
-		
+
 		ImGui::SetCursorPosX(50);
-		
+
 		if (ImGui::ImageButtonWithText("quit_game_btn", (ImTextureID)m_pButtonTex, "Quit", ImVec2(m_pButtonTex->GetWidth(), m_pButtonTex->GetHeight())))
 		{
 			SDL_Event event;
@@ -113,4 +116,21 @@ void GameUI::RenderMainMenu()
 
 	ImGui::GetForegroundDrawList()->AddImage((ImTextureID)m_pCursorTex, ImVec2(x, y),
 		ImVec2(x + m_pCursorTex->GetWidth(), y + m_pCursorTex->GetHeight()));
+}
+
+void GameUI::RenderHUD()
+{
+	return;
+
+	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
+	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::SetNextWindowBgAlpha(0.0f);
+
+	if (ImGui::Begin("TUTORIAL WINDOW", 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	{
+		// lazy to do in proper way, so hack it
+		ImGui::GetWindowDrawList()->AddImage((ImTextureID)m_pTutorialTex, ImVec2(0.f, 0.f), ImVec2(m_pTutorialTex->GetWidth(), m_pTutorialTex->GetHeight()));
+	}
+
+	ImGui::End();
 }

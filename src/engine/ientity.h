@@ -82,6 +82,8 @@ struct UserCmd
 	uint8_t strafeRight;
 	uint16_t mouseX;
 	uint16_t mouseY;
+	int16_t deltaX;
+	int16_t deltaY;
 };
 
 class IServerGame

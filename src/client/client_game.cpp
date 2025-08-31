@@ -124,6 +124,15 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 			m_bShowMenu = !m_bShowMenu;
 	}
 
+	if (m_bShowMenu)
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
+	else
+	{
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+
 	// UserCmd stuff
 
 	if (!m_bShowMenu)
@@ -146,8 +155,22 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 		int posX = 0, posY = 0;
 		SDL_GetMouseState(&posX, &posY);
 
+		int width = 0, height = 0;
+		SDL_GetWindowSize(GetEngine()->GetWindow(), &height, &height);
+
+		int centerX = width / 2;
+		int centerY = height / 2;
+
+		int deltaX = posX - centerX;
+		int deltaY = posY - centerY;
+
+		SDL_WarpMouseInWindow(GetEngine()->GetWindow(), centerX, centerY);
+	
 		userCmd.mouseX = (uint16_t)posX;
 		userCmd.mouseY = (uint16_t)posY;
+
+		userCmd.deltaX = (int16_t)deltaX;
+		userCmd.deltaY = (int16_t)deltaY;
 
 		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
 	}
@@ -176,6 +199,8 @@ void ClientGame::Render()
 
 	if (m_bShowMenu)
 		g_GameUI.RenderMainMenu();
+	else
+		g_GameUI.RenderHUD();
 
 	RenderOverlay();
 
