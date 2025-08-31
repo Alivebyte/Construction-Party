@@ -287,7 +287,7 @@ void ui_menu_options::draw() {
     ImGui::End();
 
     if ( m_show_apply_window ) {
-        ImGui::Begin( "Warning!", &m_show_apply_window );
+        ImGui::Begin( "Warning!", &m_show_apply_window, ImGuiWindowFlags_NoSavedSettings );
         ImGui::Text( "To apply the settings, you need to restart the application." );
         if (ImGui::Button("OK")) {
             m_show_apply_window = false;
