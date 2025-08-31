@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(engine)
 
 find_package(SDL2 CONFIG REQUIRED)
+find_path(MINIAUDIO_INCLUDE_DIRS "miniaudio.h")
 
 list(APPEND ENGINE_SOURCES
 	# Core
@@ -42,8 +43,14 @@ list(APPEND ENGINE_SOURCES
 	shadersystem.cpp
 	modelsystem.h
 	modelsystem.cpp
+	# Sound System
+	soundsystem.cpp
+	soundsystem.h
+
 )
 add_library(${PROJECT_NAME} SHARED ${ENGINE_SOURCES})
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${MINIAUDIO_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE

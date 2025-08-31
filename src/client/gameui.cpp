@@ -29,7 +29,9 @@ GameUI::GameUI() :
 	m_pStarTex(nullptr),
 	m_pButtonTex(nullptr),
 	m_pBackgroundTex(nullptr),
-	m_pTutorialTex(nullptr)
+	m_pTutorialTex(nullptr),
+	m_hMainMenuMusic(-1),
+	m_hInGameMusic(-1)
 {
 }
 
@@ -40,6 +42,8 @@ GameUI::~GameUI()
 	m_pButtonTex = nullptr;
 	m_pBackgroundTex = nullptr;
 	m_pTutorialTex = nullptr;
+	m_hMainMenuMusic = -1;
+	m_hInGameMusic = -1;
 }
 
 void GameUI::Init()
@@ -49,10 +53,23 @@ void GameUI::Init()
 	m_pButtonTex = GetRender()->LoadTexture2D("data/textures/ui/ui_button.png");
 	m_pBackgroundTex = GetRender()->LoadTexture2D("data/textures/ui/ui_background.png");
 	m_pTutorialTex = GetRender()->LoadTexture2D("data/textures/ui/ui_tutorial.png");
+
+	m_hMainMenuMusic = g_SoundSystem.LoadSound("data/music/Monkeys Spinning Monkeys.mp3");
+	m_hInGameMusic = g_SoundSystem.LoadSound("data/music/Investigations.mp3");
 }
 
 void GameUI::RenderMainMenu()
 {
+	if (g_SoundSystem.IsPlaying(m_hInGameMusic))
+	{
+		g_SoundSystem.StopSound(m_hInGameMusic);
+	}
+
+	if (!g_SoundSystem.IsPlaying(m_hMainMenuMusic))
+	{
+		g_SoundSystem.PlaySound(m_hMainMenuMusic, true);
+	}
+
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
 	ImGui::SetNextWindowBgAlpha(0.0f);
@@ -120,6 +137,16 @@ void GameUI::RenderMainMenu()
 
 void GameUI::RenderHUD()
 {
+	if (g_SoundSystem.IsPlaying(m_hMainMenuMusic))
+	{
+		g_SoundSystem.StopSound(m_hMainMenuMusic);
+	}
+
+	if (!g_SoundSystem.IsPlaying(m_hInGameMusic))
+	{
+		g_SoundSystem.PlaySound(m_hInGameMusic, true);
+	}
+
 	return;
 
 	ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));

@@ -2,6 +2,7 @@
 #include <tinyxml2.h>
 #include <imgui.h>
 #include "ui_menu.h"
+#include "soundsystem.h"
 
 #define DISABLE_HZ
 
@@ -272,8 +273,13 @@ void ui_menu_options::draw() {
             }
         }
         if ( ImGui::BeginTabItem( "Sound" ) ) {
-            ImGui::SliderFloat( "SFX Volume", &g_options_config.m_sfx_volume, 0.0f, 1.0f );
-            ImGui::SliderFloat( "Music Volume", &g_options_config.m_music_volume, 0.0f, 1.0f );
+            //ImGui::SliderFloat( "SFX Volume", &g_options_config.m_sfx_volume, 0.0f, 1.0f );
+            //ImGui::SliderFloat( "Music Volume", &g_options_config.m_music_volume, 0.0f, 1.0f );
+
+            ImGui::SliderFloat("Master Volume", &g_options_config.m_music_volume, 0.0f, 1.0f);
+
+            g_SoundSystem.SetMasterVolume(g_options_config.m_music_volume);
+
             ImGui::EndTabItem();
         }
         if ( ImGui::BeginTabItem( "Input" ) ) {

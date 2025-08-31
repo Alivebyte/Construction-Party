@@ -1,3 +1,4 @@
+#define ENGINE_EXPORTS
 #include "engine.h"
 #include "ifilesystem.h"
 #include "ilogger.h"
@@ -9,6 +10,7 @@
 #include "shadersystem.h"
 #include "modelsystem.h"
 #include "world.h"
+#include "soundsystem.h"
 #include <stdio.h>
 
 #define WINDOW_TITLE "Construction Party"
@@ -59,6 +61,9 @@ void Engine::Init()
 	{
 		g_pRender = new Render();
 		g_pRender->Init(m_pWindow);
+	
+		// Initialize sound system
+		g_SoundSystem.Init();
 	}
 
 	// Load server dll
@@ -156,6 +161,11 @@ void Engine::Shutdown()
 	g_pClientGame->Shutdown();
 
 	g_pServerGame->Shutdown();
+
+	if (!s_bIsDedicated)
+	{
+		g_SoundSystem.Shutdown();
+	}
 
 	if (g_pRender)
 	{
