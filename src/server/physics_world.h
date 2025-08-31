@@ -58,6 +58,7 @@ public:
 	~PhysicsWorld();
 
 	void Init();
+	void Update(float deltaTime, int collisionSteps = 1);
 	void Shutdown();
 
 	void DebugDraw();

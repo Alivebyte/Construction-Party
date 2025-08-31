@@ -267,6 +267,11 @@ void PhysicsWorld::Init()
 	g_JPHPhysicsSystem.SetContactListener(&g_MyContactListener);
 }
 
+void PhysicsWorld::Update(float deltaTime, int collisionSteps)
+{
+	g_JPHPhysicsSystem.Update(deltaTime, collisionSteps, g_pTempAllocator, g_pJobSystemThreadPool);
+}
+
 void PhysicsWorld::Shutdown()
 {
 	// Free a job system.

@@ -1,4 +1,5 @@
 // server_main.cpp - Server game initialization
+#include "iengine.h"
 #include "ientity.h"
 #include "baseentity.h"
 #include "physics_world.h"
@@ -54,8 +55,10 @@ void ServerGame::Update()
 void ServerGame::Simulate()
 {
 	// TODO: Simulate physics
+	float deltaTime = GetEngine()->GetDeltaTime();
 
-
+	g_PhysicsWorld.Update(deltaTime);
+	
 }
 
 void ServerGame::Shutdown()
