@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.19)
 
 project(game_exe)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	list(APPEND EXE_SOURCES
+		"game.rc"
+	)
+endif()
+
 list(APPEND EXE_SOURCES
    "main.cpp"
 )
