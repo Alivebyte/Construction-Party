@@ -26,11 +26,10 @@ void Player::Think()
 	JPH::BodyInterface& bi = g_JPHPhysicsSystem.GetBodyInterface();
 
 	//static Vec3Arg lastHitPos;
-
-	if (m_RayPickMode)
+	if (gDragConstraint == nullptr)
 	{
-		if (gDragAnchor)
-			bi.SetPosition(gDragAnchor->GetID(), ToJPH(m_RayOrigin), EActivation::DontActivate);
+
+		
 
 		//JPH::RayCast ray;
 		//ray.mOrigin = ToJPH(m_Origin);
@@ -51,58 +50,73 @@ void Player::Think()
 		// Cast ray
 		RayCastResult hit;
 		bool had_hit = g_JPHPhysicsSystem.GetNarrowPhaseQuery().CastRay(ray, hit, SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::MOVING), SpecifiedObjectLayerFilter(Layers::MOVING));
+		gDragBody = hit.mBodyID;
+
+		Vec3Arg hitPosition = ray.GetPointOnRay(hit.mFraction);
+
+		g_pDebugRender->DrawAxis(ToGLM(hitPosition));
 		if (had_hit)
 		{
-			gDragBody = hit.mBodyID;
+			
 
-			Vec3Arg hitPosition = ray.GetPointOnRay(hit.mFraction);
-
-			g_pDebugRender->DrawAxis(ToGLM(hitPosition));
-
-			// Target body must be dynamic
-			BodyLockWrite lock(g_JPHPhysicsSystem.GetBodyLockInterface(), gDragBody);
-			Body& drag_body = lock.GetBody();
-			if (lock.Succeeded())
+			if (m_RayPickMode)
 			{
-				if (drag_body.IsDynamic())
+				// Target body must be dynamic
+				BodyLockWrite lock(g_JPHPhysicsSystem.GetBodyLockInterface(), gDragBody);
+				Body& drag_body = lock.GetBody();
+				if (lock.Succeeded())
 				{
-					// Create constraint to drag body
-					DistanceConstraintSettings settings;
-					settings.mPoint1 = settings.mPoint2 = hitPosition;
-					settings.mLimitsSpringSettings.mFrequency = 2.0f / 1.0f;
-					settings.mLimitsSpringSettings.mDamping = 1.0f;
+					if (drag_body.IsDynamic())
+					{
+						// Create constraint to drag body
+						DistanceConstraintSettings settings;
+						settings.mPoint1 = settings.mPoint2 = hitPosition;
+						settings.mLimitsSpringSettings.mFrequency = 2.0f / 1.0f;
+						settings.mLimitsSpringSettings.mDamping = 1.0f;
 
-					// Construct fixed body for the mouse constraint
-					// Note that we don't add it to the world since we don't want anything to collide with it, we just
-					// need an anchor for a constraint
-					Body* drag_anchor = bi.CreateBody(BodyCreationSettings(new SphereShape(0.01f), hitPosition, Quat::sIdentity(), EMotionType::Static, Layers::NON_MOVING));
-					gDragAnchor = drag_anchor;
+						// Construct fixed body for the mouse constraint
+						// Note that we don't add it to the world since we don't want anything to collide with it, we just
+						// need an anchor for a constraint
+						Body* drag_anchor = bi.CreateBody(BodyCreationSettings(new SphereShape(0.01f), hitPosition, Quat::sIdentity(), EMotionType::Static, Layers::NON_MOVING));
+						gDragAnchor = drag_anchor;
 
-					// Construct constraint that connects the drag anchor with the body that we want to drag
-					gDragConstraint = settings.Create(*drag_anchor, drag_body);
-					g_JPHPhysicsSystem.AddConstraint(gDragConstraint);
+						// Construct constraint that connects the drag anchor with the body that we want to drag
+						gDragConstraint = settings.Create(*drag_anchor, drag_body);
+						g_JPHPhysicsSystem.AddConstraint(gDragConstraint);
+					}
 				}
 			}
 		}
 	}
 	else
 	{
-		// If key released, destroy constraint
-		if (gDragConstraint != nullptr)
+		if (!m_RayPickMode)
 		{
-			g_JPHPhysicsSystem.RemoveConstraint(gDragConstraint);
-			gDragConstraint = nullptr;
-		}
+			// If key released, destroy constraint
+			if (gDragConstraint != nullptr)
+			{
+				g_JPHPhysicsSystem.RemoveConstraint(gDragConstraint);
+				gDragConstraint = nullptr;
+			}
 
-		// Destroy drag anchor
-		if (gDragAnchor != nullptr)
+			// Destroy drag anchor
+			if (gDragAnchor != nullptr)
+			{
+				bi.DestroyBody(gDragAnchor->GetID());
+				gDragAnchor = nullptr;
+			}
+
+			// Forget the drag body
+			gDragBody = BodyID();
+		}
+		else
 		{
-			bi.DestroyBody(gDragAnchor->GetID());
-			gDragAnchor = nullptr;
-		}
+			if (gDragAnchor)
+				bi.SetPosition(gDragAnchor->GetID(), ToJPH(m_RayOrigin), EActivation::DontActivate);
 
-		// Forget the drag body
-		gDragBody = BodyID();
+			// Activate other body
+			bi.ActivateBody(gDragBody);
+		}
 
 	}
 }
