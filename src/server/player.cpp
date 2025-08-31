@@ -42,7 +42,7 @@ void Player::Think()
 		//JPH::RayCastResult hit;
 		//had_hit = g_JPHPhysicsSystem.GetNarrowPhaseQuery().CastRay(ray, hit, JPH::SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::MOVING), JPH::SpecifiedObjectLayerFilter(Layers::MOVING));
 
-		g_pDebugRender->DrawLine(m_RayOrigin, m_RayOrigin + 200.0f * m_Direction, glm::vec3(1.0f));
+		//g_pDebugRender->DrawLine(m_RayOrigin, m_RayOrigin + 200.0f * m_Direction, glm::vec3(1.0f));
 
 		// Create ray
 		RRayCast ray{ ToJPH(m_RayOrigin), ToJPH(m_RayOrigin + 200.0f * m_Direction) };
@@ -54,7 +54,7 @@ void Player::Think()
 
 		Vec3Arg hitPosition = ray.GetPointOnRay(hit.mFraction);
 
-		g_pDebugRender->DrawAxis(ToGLM(hitPosition));
+		//g_pDebugRender->DrawAxis(ToGLM(hitPosition));
 		if (had_hit)
 		{
 			

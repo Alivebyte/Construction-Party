@@ -308,7 +308,7 @@ void ClientGame::Render()
 
 	g_GameUI.RenderCursor();
 
-	RenderOverlay();
+	//RenderOverlay();
 
 	ImGui::Render();
 	ImGui_ImplEngine_RenderDrawData(ImGui::GetDrawData());
