@@ -3,9 +3,6 @@ project(engine)
 
 find_package(SDL2 CONFIG REQUIRED)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<0:>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<0:>")
-
 list(APPEND ENGINE_SOURCES
 	# Core
 	ilogger.h
