@@ -247,13 +247,20 @@ void PhysicsWorld::Init()
 
 	// Set a our debug renderer to Jolt
 	JPH::DebugRenderer::sInstance = &g_MyDebugRenderer;
-
+	
 	// We need a temp allocator for temporary allocations during the physics update. We're
 	// pre-allocating 10 MB to avoid having to do allocations during the physics update.
 	g_pTempAllocator = new JPH::TempAllocatorImpl(10 * 1024 * 1024);
 
 	// We need a job system that will execute physics jobs on multiple threads.
 	g_pJobSystemThreadPool = new JPH::JobSystemThreadPool(JPH::cMaxPhysicsJobs, JPH::cMaxPhysicsBarriers, std::thread::hardware_concurrency() - 1);
+
+	// Setup physics limits
+	phys_limits_t phys_limits;
+	phys_limits.maxBodies = 1024;
+	phys_limits.numBodyMutexes = 0;
+	phys_limits.maxContactConstraints = 1024;
+	phys_limits.maxBodyPairs = 1024;
 
 	// Now we can create the physics system.
 	g_JPHPhysicsSystem.Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, 
@@ -295,6 +302,8 @@ void PhysicsWorld::Shutdown()
 	delete JPH::Factory::sInstance;
 	JPH::Factory::sInstance = nullptr;
 }
+
+void 
 
 void PhysicsWorld::DebugDraw()
 {

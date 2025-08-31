@@ -16,6 +16,18 @@
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
 
+// Yeah I'm lazy so I'll do it here, just what you'd expect from typical C-style thing
+#define uint uint16_t
+
+typedef struct phys_limits_s
+{
+	uint maxBodies;
+	uint numBodyMutexes;
+	uint maxBodyPairs;
+	uint maxContactConstraints;
+} phys_limits_t;
+
+
 // Disable common warnings triggered by Jolt, you can use JPH_SUPPRESS_WARNING_PUSH / JPH_SUPPRESS_WARNING_POP to store and restore the warning state
 JPH_SUPPRESS_WARNINGS
 
@@ -59,6 +71,7 @@ public:
 
 	void Init();
 	void Update(float deltaTime, int collisionSteps = 1);
+	void SetupLimits();
 	void Shutdown();
 
 	void DebugDraw();
