@@ -123,14 +123,11 @@ void Engine::Loop()
 
 			// Client event handling
 			g_pClientGame->OnEvent(&event);
-
-			// Server update handling
-			g_pServerGame->Update();
 		}
 	}
 
-	// Event Update
-	// ????
+	// Server update handling
+	g_pServerGame->Update();
 
 	// Server world update
 	g_World.Update();

@@ -7,6 +7,8 @@
 #include "gameui.h"
 #include "ui_menu.h"
 
+#include "camera.h"
+
 #include <SDL.h>
 
 #include <imgui.h>
@@ -66,6 +68,7 @@ public:
 	void RenderOverlay();
 
 private:
+	Camera m_Camera;
 	bool m_bShowMenu = false;
 };
 
@@ -82,6 +85,8 @@ void ClientGame::Init()
 
 	// Initialize config
 	g_options_config.load();
+
+	g_SoundSystem.SetMasterVolume(g_options_config.m_music_volume);
 
 	// Resize window with config values
 	SDL_SetWindowSize(GetEngine()->GetWindow(), g_options_config.m_video_mode.width, g_options_config.m_video_mode.height);
@@ -137,8 +142,13 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 
 	if (!m_bShowMenu)
 	{
-		UserCmd userCmd;
-		memset(&userCmd, 0, sizeof(userCmd));
+		static UserCmd userCmd;
+		static bool firstTime = true;
+		if (firstTime)
+		{
+			memset(&userCmd, 0, sizeof(userCmd));
+			firstTime = false;
+		}
 
 		if (pEvent->type == SDL_KEYDOWN)
 		{
@@ -150,6 +160,17 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 				userCmd.strafeLeft = true;
 			if (pEvent->key.keysym.sym == SDLK_d)
 				userCmd.strafeRight = true;
+		}
+		else if (pEvent->type == SDL_KEYUP)
+		{
+			if (pEvent->key.keysym.sym == SDLK_w)
+				userCmd.walkForward = false;
+			if (pEvent->key.keysym.sym == SDLK_s)
+				userCmd.walkBackward = false;
+			if (pEvent->key.keysym.sym == SDLK_a)
+				userCmd.strafeLeft = false;
+			if (pEvent->key.keysym.sym == SDLK_d)
+				userCmd.strafeRight = false;
 		}
 
 		int posX = 0, posY = 0;
@@ -172,6 +193,22 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 		userCmd.deltaX = (int16_t)deltaX;
 		userCmd.deltaY = (int16_t)deltaY;
 
+		// calculate yaw and pitch
+		static float yaw = 0.0f, pitch = 0.0f;
+
+		yaw += (float)deltaX * g_options_config.m_mouse_sensitive;
+		pitch += (float)-deltaY * g_options_config.m_mouse_sensitive;
+		if (pitch >= 89.0f)
+			pitch = 89.0f;
+		else if (pitch <= -89.0f)
+			pitch = -89.0f;
+
+		m_Camera.SetYawPitch(yaw, pitch);
+
+		userCmd.dirx = m_Camera.GetDirection().x;
+		userCmd.diry = m_Camera.GetDirection().y;
+		userCmd.dirz = m_Camera.GetDirection().z;
+
 		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
 	}
 }
@@ -188,7 +225,9 @@ void ClientGame::Render()
 	IEntity* pEntity = GetServerGameAPI()->FindEntityByClassname("player");
 	if (pEntity)
 	{
-		glm::mat4 view = glm::inverse(pEntity->GetEntityMatrix());
+		m_Camera.SetPosition(pEntity->GetOrigin());
+
+		glm::mat4 view = m_Camera.GetViewMatrix();
 		GetRender()->SetViewMatrix(view);
 	}
 

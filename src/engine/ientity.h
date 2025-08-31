@@ -84,6 +84,7 @@ struct UserCmd
 	uint16_t mouseY;
 	int16_t deltaX;
 	int16_t deltaY;
+	float dirx, diry, dirz;
 };
 
 class IServerGame

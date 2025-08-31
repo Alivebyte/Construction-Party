@@ -29,6 +29,9 @@ list(APPEND CLIENT_SOURCES
 	${GAME_SHARED_SOURCE_DIR}/baseentity.cpp
 	${GAME_SHARED_SOURCE_DIR}/baseentity.h
 
+	# Client
+	camera.cpp
+	camera.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${CLIENT_SOURCES})
