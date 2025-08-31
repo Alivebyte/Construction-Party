@@ -71,7 +71,6 @@ public:
 
 	void Init();
 	void Update(float deltaTime, int collisionSteps = 1);
-	void SetupLimits();
 	void Shutdown();
 
 	void DebugDraw();

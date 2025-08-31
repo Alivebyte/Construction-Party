@@ -303,8 +303,6 @@ void PhysicsWorld::Shutdown()
 	JPH::Factory::sInstance = nullptr;
 }
 
-void 
-
 void PhysicsWorld::DebugDraw()
 {
 	JPH::BodyManager::DrawSettings settings;
