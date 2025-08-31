@@ -97,10 +97,13 @@ void Engine::RunLoop()
 void Engine::Loop()
 {
 	// Get current ticks
-	static Uint32 startTime = SDL_GetTicks(), endTime = SDL_GetTicks();
+	static Uint64 frequency = SDL_GetPerformanceFrequency();
+	static Uint64 oldTime = 0;
+	Uint64 currentTime = SDL_GetPerformanceCounter();
+	if (currentTime <= oldTime)
+		currentTime = oldTime + 1;
 
-	startTime = SDL_GetTicks();
-	m_fDeltaTime = ((float)startTime - (float)endTime) / 1000.0f;
+	m_fDeltaTime = oldTime > 0 ? (float)((double)(currentTime - oldTime) / frequency) : (float)(1.0f / 60.0f);
 
 	// Event handling
 	if (m_pWindow)
@@ -155,7 +158,7 @@ void Engine::Loop()
 		g_pRender->ResetStates();
 	}
 
-	endTime = startTime;
+	oldTime = currentTime;
 }
 
 void Engine::Shutdown()
