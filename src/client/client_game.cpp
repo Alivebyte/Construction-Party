@@ -21,6 +21,9 @@ public:
 	void Render() override;
 
 	void RenderOverlay();
+
+private:
+	bool m_bShowMenu = false;
 };
 
 static ClientGame s_ClientGame;
@@ -53,28 +56,40 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 {
 	ImGui_ImplSDL2_ProcessEvent(pEvent); // Forward your event to backend
 
-	UserCmd userCmd;
-	memset(&userCmd, 0, sizeof(userCmd));
-
+	// Game ui stuff
 	if (pEvent->type == SDL_KEYDOWN)
 	{
-		if (pEvent->key.keysym.sym == SDLK_w)
-			userCmd.walkForward = true;
-		if (pEvent->key.keysym.sym == SDLK_s)
-			userCmd.walkBackward = true;
-		if (pEvent->key.keysym.sym == SDLK_a)
-			userCmd.strafeLeft = true;
-		if (pEvent->key.keysym.sym == SDLK_d)
-			userCmd.strafeRight = true;
+		if (pEvent->key.keysym.sym == SDLK_ESCAPE)
+			m_bShowMenu = !m_bShowMenu;
 	}
 
-	int posX = 0, posY = 0;
-	SDL_GetMouseState(&posX, &posY);
+	// UserCmd stuff
 
-	userCmd.mouseX = (uint16_t)posX;
-	userCmd.mouseY = (uint16_t)posY;
+	if (!m_bShowMenu)
+	{
+		UserCmd userCmd;
+		memset(&userCmd, 0, sizeof(userCmd));
 
-	GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
+		if (pEvent->type == SDL_KEYDOWN)
+		{
+			if (pEvent->key.keysym.sym == SDLK_w)
+				userCmd.walkForward = true;
+			if (pEvent->key.keysym.sym == SDLK_s)
+				userCmd.walkBackward = true;
+			if (pEvent->key.keysym.sym == SDLK_a)
+				userCmd.strafeLeft = true;
+			if (pEvent->key.keysym.sym == SDLK_d)
+				userCmd.strafeRight = true;
+		}
+
+		int posX = 0, posY = 0;
+		SDL_GetMouseState(&posX, &posY);
+
+		userCmd.mouseX = (uint16_t)posX;
+		userCmd.mouseY = (uint16_t)posY;
+
+		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
+	}
 }
 
 void ClientGame::Render()
@@ -98,7 +113,8 @@ void ClientGame::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
-	//g_GameUI.Render();
+	if (m_bShowMenu)
+		g_GameUI.RenderMainMenu();
 
 	RenderOverlay();
 
@@ -121,6 +137,10 @@ void ClientGame::RenderOverlay()
 	SDL_GetMouseState(&x, &y);
 
 	sprintf(szBuffer, "mouse pos: %d %d", x, y);
+	pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
+	height += 12.0f;
+
+	sprintf(szBuffer, "delta: %f", GetEngine()->GetDeltaTime());
 	pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
 	height += 12.0f;
 

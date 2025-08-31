@@ -17,7 +17,7 @@ public:
 
 	void Init();
 
-	void Render();
+	void RenderMainMenu();
 };
 
 extern GameUI g_GameUI;

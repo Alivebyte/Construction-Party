@@ -47,7 +47,7 @@ void GameUI::Init()
 	m_pBackgroundTex = GetRender()->LoadTexture2D("data/textures/ui/ui_background.png");
 }
 
-void GameUI::Render()
+void GameUI::RenderMainMenu()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
