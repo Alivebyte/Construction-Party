@@ -43,7 +43,7 @@ void PhysicsEntity::Think()
 		//m_pBody->DebugDraw();
 
 		m_Origin = m_pBody->GetPosition();
-
+		m_Orient = m_pBody->GetRotation();
 	}
 }
 

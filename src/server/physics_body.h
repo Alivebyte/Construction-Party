@@ -19,6 +19,7 @@ public:
 	JPH::BodyID* GetBodyId() { if (m_body) { m_body->GetID(); } else { return NULL; } }
 	void SetPosition(const glm::vec3& pos);
 	glm::vec3 GetPosition();
+	glm::quat GetRotation();
 	void DebugDraw();
 private:
 	JPH::BodyCreationSettings m_bcsettings;

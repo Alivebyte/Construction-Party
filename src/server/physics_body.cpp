@@ -38,6 +38,12 @@ glm::vec3 PhysicsRigidbody::GetPosition()
 	return ToGLM(pps);
 }
 
+glm::quat PhysicsRigidbody::GetRotation()
+{
+	JPH::Quat rot = m_bodyinterface->GetRotation(m_body->GetID());
+	return glm::quat(rot.GetW(), rot.GetX(), rot.GetY(), rot.GetZ());
+}
+
 void PhysicsRigidbody::DebugDraw()
 {
 	JPH::RMat44 transform = m_body->GetWorldTransform();
