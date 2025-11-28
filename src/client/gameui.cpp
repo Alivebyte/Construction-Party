@@ -157,11 +157,11 @@ void GameUI::RenderHUD()
 
 void GameUI::RenderCursor()
 {
-	SDL_ShowCursor(false);
+	/*SDL_ShowCursor(false);
 
 	int x = 0, y = 0;
 	SDL_GetMouseState(&x, &y);
 
 	ImGui::GetForegroundDrawList()->AddImage((ImTextureID)m_pCursorTex, ImVec2(x, y),
-		ImVec2(x + m_pCursorTex->GetWidth(), y + m_pCursorTex->GetHeight()));
+		ImVec2(x + m_pCursorTex->GetWidth(), y + m_pCursorTex->GetHeight()));*/
 }

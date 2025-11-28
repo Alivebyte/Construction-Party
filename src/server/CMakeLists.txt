@@ -28,6 +28,8 @@ list(APPEND SERVER_SOURCES
 	# Entities
 	player.cpp
 	player.h
+	weapon.cpp
+	weapon.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${SERVER_SOURCES})

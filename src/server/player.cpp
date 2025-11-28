@@ -27,9 +27,9 @@ void Player::Think()
 	if (m_userCmd.walkBackward)
 		m_Origin -= m_Direction * 5.5f * dt;
 	if (m_userCmd.strafeLeft)
-		m_Origin -= glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 5.0f * dt;
+		m_Origin -= glm::normalize(glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) ) * 5.0f * dt;
 	if (m_userCmd.strafeRight)
-		m_Origin += glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 5.0f * dt;
+		m_Origin += glm::normalize(glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) ) * 5.0f * dt;
 }
 
 void Player::ParseUserCmd(const UserCmd* pUserCmd)
