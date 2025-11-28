@@ -24,7 +24,7 @@ static IServerGame* g_pServerGame = nullptr;
 int g_mousePoxX = 0;
 int g_mousePoxY = 0;
 
-void Engine::Init()
+void Engine::Init(bool initSound)
 {
 	// Initialize logger
 	GetLogger()->Init();
@@ -63,7 +63,8 @@ void Engine::Init()
 		g_pRender->Init(m_pWindow);
 	
 		// Initialize sound system
-		g_SoundSystem.Init();
+		if (initSound)
+			g_SoundSystem.Init();
 	}
 
 	// Load server dll

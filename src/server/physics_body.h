@@ -21,10 +21,14 @@ public:
 	glm::vec3 GetPosition();
 	glm::quat GetRotation();
 	void DebugDraw();
+
+	void SetEntity(IEntity* entity) { m_entity = entity; }
+	IEntity* GetEntity() { return m_entity; }
 private:
 	JPH::BodyCreationSettings m_bcsettings;
 	JPH::BodyInterface* m_bodyinterface;
 	JPH::Body* m_body;
+	IEntity* m_entity;
 };
 
 #endif // !PHYSICS_BODY_H

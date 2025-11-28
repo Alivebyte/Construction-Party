@@ -1,6 +1,8 @@
 #ifndef PHYSICS_WORLD_H
 #define PHYSICS_WORLD_H
 
+#include <stdint.h>
+
 #include <glm/glm.hpp>
 
 // Jolt core includes
@@ -128,6 +130,22 @@ namespace BroadPhaseLayers
 // JPH Physics System
 extern JPH::PhysicsSystem g_JPHPhysicsSystem;
 
+// Ray hit result structure.
+struct RayHitResult
+{
+	// Origin of the ray
+	glm::vec3 origin;
+
+	// Direction and length of the ray (anything beyond this length will not be reported as a hit)
+	glm::vec3 direction;
+
+	// Body that was hit
+	class PhysicsRigidbody* pBody = nullptr;
+
+	// Hit fraction of the ray/object [0, 1], HitPoint = Start + mFraction * (End - Start)
+	float fFraction = 1.0f + FLT_EPSILON;
+};
+
 // The physics world.
 class PhysicsWorld
 {
@@ -141,6 +159,8 @@ public:
 	void Shutdown();
 	
 	void DebugDraw();
+
+	bool TraceRay(const glm::vec3& origin, const glm::vec3& direction, RayHitResult& result, uint16_t layer, uint16_t filter);
 };
 
 extern PhysicsWorld g_PhysicsWorld;

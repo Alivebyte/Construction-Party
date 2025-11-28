@@ -1,7 +1,8 @@
 #include "physics_body.h"
 
 PhysicsRigidbody::PhysicsRigidbody(const JPH::BodyCreationSettings& settings, PhysicsWorld* world) :
-	m_body(nullptr)
+	m_body(nullptr),
+	m_entity(nullptr)
 {
 	m_bcsettings = settings;
 	m_bodyinterface = world->GetBodyInterface();

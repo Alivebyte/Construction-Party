@@ -1,5 +1,6 @@
 #include "ilogger.h"
 #include "physics_world.h"
+#include "physics_body.h"
 #include "debugrender.h"
 
 #include <Jolt/Renderer/DebugRenderer.h>
@@ -298,4 +299,23 @@ void PhysicsWorld::DebugDraw()
 	JPH::BodyManager::DrawSettings settings;
 	//g_JPHPhysicsSystem.DrawBodies(settings, JPH::DebugRenderer::sInstance);
 	//g_JPHPhysicsSystem.DrawConstraints(JPH::DebugRenderer::sInstance);
+}
+
+bool PhysicsWorld::TraceRay(const glm::vec3& origin, const glm::vec3& direction, RayHitResult& result, uint16_t layer, uint16_t filter)
+{
+	JPH::RRayCast ray{ ToJPH(origin), ToJPH(direction) };
+	JPH::RayCastResult hit;
+
+	// Cast ray
+	bool had_hit = g_JPHPhysicsSystem.GetNarrowPhaseQuery().CastRay(ray, hit, JPH::SpecifiedBroadPhaseLayerFilter(JPH::BroadPhaseLayer(layer)), JPH::SpecifiedObjectLayerFilter(filter));
+	if (had_hit)
+	{
+		result.origin = ToGLM(ray.GetPointOnRay(hit.mFraction));
+		result.direction = direction;
+		result.fFraction = hit.mFraction;
+		result.pBody = (PhysicsRigidbody*)GetBodyInterface()->GetUserData(hit.mBodyID);
+		return true;
+	}
+
+	return false;
 }

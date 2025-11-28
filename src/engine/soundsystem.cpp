@@ -8,7 +8,7 @@ ENGINE_API SoundSystem g_SoundSystem;
 
 SoundSystem::SoundSystem() :
 	m_numSounds(0),
-	m_inited(true)
+	m_inited(false)
 {
 	memset(&m_engine, 0, sizeof(m_engine));
 	memset(&m_sounds, 0, sizeof(m_sounds));
@@ -20,6 +20,9 @@ SoundSystem::~SoundSystem()
 
 void SoundSystem::Init()
 {
+	if (SDL_getenv("NOSOUND"))
+		return;
+
 	ma_result result;
 
 	result = ma_engine_init(NULL, &m_engine);

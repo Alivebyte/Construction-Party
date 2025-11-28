@@ -8,7 +8,7 @@
 class Engine : public IEngine
 {
 public:
-	void Init() override;
+	void Init(bool initSound) override;
 	void RunLoop() override;
 	void Loop() override;
 	void Shutdown() override;

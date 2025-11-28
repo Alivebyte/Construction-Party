@@ -92,23 +92,24 @@ int main()
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    int argc;
-    LPWSTR *lpargv = CommandLineToArgvW(GetCommandLineW(), &argc);
-    char** argv = (char**)malloc((argc + 1) * sizeof(char));
+    //int argc;
+    //LPWSTR *lpargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    //char** argv = (char**)malloc((argc + 1) * sizeof(char));
 
-    for (int i = 0; i < argc; ++i)
-    {
-        size_t size = wcslen(lpargv[i]) + 1;
+    //for (int i = 0; i < argc; ++i)
+    //{
+    //    size_t size = wcslen(lpargv[i]) + 1;
 
-        argv[i] = (char*)malloc(size * sizeof(wchar_t));
-        wcstombs(argv[i], lpargv[i], size);
-    }
+    //    argv[i] = (char*)malloc(size * sizeof(wchar_t));
+    //    wcstombs(argv[i], lpargv[i], size);
+    //}
 
     int ret;
 
-    ret = App_Start(argc, argv);
-    for (int i = 0; i < argc; ++i)
-        free(argv[i]);
+    //ret = App_Start(argc, argv);
+    ret = App_Start(__argc, __argv);
+    //for (int i = 0; i < argc; ++i)
+    //    free(argv[i]);
    // free(argv);
     
     return ret;

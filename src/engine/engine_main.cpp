@@ -1,21 +1,23 @@
 #include "engine_main.h"
 #include "engine.h"
 
-IEngine* g_Engine = new Engine;
-
 extern "C" int __declspec(dllexport) Engine_Main(int argc, char** argv)
 {
-	
-	if (g_Engine)
+	bool initSound = true;
+
+	for (int i = 0; i < argc; i++)
 	{
-		g_Engine->Init();
-		g_Engine->Shutdown();
-		return 0;
+		if (strcmp(argv[i], "-nosound") == 0)
+			initSound = false;
 	}
-	else return 1;
+
+	GetEngine()->Init(initSound);
+	GetEngine()->Shutdown();
+	return 0;
 }
 
 IEngine* GetEngine()
 {
-	return g_Engine;
+	static Engine s_engine;
+	return &s_engine;
 }
