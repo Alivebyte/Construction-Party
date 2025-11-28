@@ -127,6 +127,9 @@ void Engine::Loop()
 		}
 	}
 
+	// Client update handling
+	g_pClientGame->Update();
+
 	// Server update handling
 	g_pServerGame->Update();
 

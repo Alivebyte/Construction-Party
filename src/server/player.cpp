@@ -6,9 +6,10 @@
 
 REGISTER_ENTITY(Player, "player");
 
-Player::Player() :
-	m_RayPickMode(false)
+Player::Player()
 {
+	m_userCmd = {};
+	m_Direction = glm::vec3(0.0f);
 }
 
 Player::~Player()
@@ -16,7 +17,19 @@ Player::~Player()
 }
 
 void Player::Think()
-{
+{	
+	// #TODO: !!!
+	float dt = GetEngine()->GetDeltaTime();
+
+	// movement
+	if (m_userCmd.walkForward)
+		m_Origin += m_Direction * 5.5f * dt;
+	if (m_userCmd.walkBackward)
+		m_Origin -= m_Direction * 5.5f * dt;
+	if (m_userCmd.strafeLeft)
+		m_Origin -= glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 5.0f * dt;
+	if (m_userCmd.strafeRight)
+		m_Origin += glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 5.0f * dt;
 }
 
 void Player::ParseUserCmd(const UserCmd* pUserCmd)
@@ -24,26 +37,13 @@ void Player::ParseUserCmd(const UserCmd* pUserCmd)
 	if (!pUserCmd)
 		return;
 
-	if (pUserCmd->action)
-		m_RayPickMode = true;
-	else
-		m_RayPickMode = false;
+	m_userCmd = *pUserCmd;
 
-	m_RayOrigin = glm::vec3(pUserCmd->posx, pUserCmd->posy, pUserCmd->posz);
+	//if (pUserCmd->action)
+	//	m_RayPickMode = true;
+	//else
+	//	m_RayPickMode = false;
+
 	m_Direction = glm::vec3(pUserCmd->dirx, pUserCmd->diry, pUserCmd->dirz);
-
-	glm::vec3 direction = glm::vec3(pUserCmd->dirx, pUserCmd->diry, pUserCmd->dirz);
-
-	// #TODO: !!!
-	float dt = GetEngine()->GetDeltaTime();
-
-	// movement
-	if (pUserCmd->walkForward)
-		m_Origin += direction * 100.5f * dt;
-	if (pUserCmd->walkBackward)
-		m_Origin -= direction * 100.5f * dt;
-	if (pUserCmd->strafeLeft)
-		m_Origin -= glm::cross(direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 100.0f * dt;
-	if (pUserCmd->strafeRight)
-		m_Origin += glm::cross(direction, glm::vec3(0.0f, 1.0f, 0.0f)) * 100.0f * dt;
+	m_Direction = glm::normalize(m_Direction);
 }

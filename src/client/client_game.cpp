@@ -62,13 +62,17 @@ public:
 	// Inherited via IClientGame
 	void Init() override;
 	void Shutdown() override;
+	void Update() override;
 	void OnEvent(const SDL_Event* pEvent) override;
 	void Render() override;
+
+	void UpdateCamera(const SDL_Event* pEvent, UserCmd* pUserCmd);
 
 	void RenderOverlay();
 
 private:
 	Camera m_Camera;
+	UserCmd m_userCmd;
 	bool m_bShowMenu = false;
 };
 
@@ -76,6 +80,8 @@ static ClientGame s_ClientGame;
 
 void ClientGame::Init()
 {
+	m_userCmd = {};
+
 	// Setup custom log function
 	SDL_LogSetPriority(APP_CATEGORY_UI, SDL_LOG_PRIORITY_VERBOSE);
 	SDL_LogSetOutputFunction(Engine_LogOutputFunction, nullptr);
@@ -118,6 +124,16 @@ void ClientGame::Shutdown()
 	g_options_config.save();
 }
 
+void ClientGame::Update()
+{
+	// Send camera direction
+	m_userCmd.dirx = m_Camera.GetDirection().x;
+	m_userCmd.diry = m_Camera.GetDirection().y;
+	m_userCmd.dirz = m_Camera.GetDirection().z;
+
+	GetEngine()->GetServerGame()->SendUserCmd(&m_userCmd);
+}
+
 void ClientGame::OnEvent(const SDL_Event* pEvent)
 {
 	ImGui_ImplSDL2_ProcessEvent(pEvent); // Forward your event to backend
@@ -135,49 +151,28 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 	}
 	else
 	{
-	//	SDL_SetRelativeMouseMode(SDL_TRUE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 
 	// UserCmd stuff
 
-	m_Camera.LookAt(glm::vec3(-0.531249285f, -0.453990191f, 0.715309143f));
-
 	if (!m_bShowMenu)
 	{
-		// becase of dead lines, no more control :(
-		static UserCmd userCmd;
-		static bool firstTime = true;
-		if (firstTime)
-		{
-			memset(&userCmd, 0, sizeof(userCmd));
-			firstTime = false;
-		}
-
 		int width = 0, height = 0;
 		SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
-
-
-		// Send mouse to player
-		int posX = 0, posY = 0;
-		SDL_GetMouseState(&posX, &posY);
-		userCmd.mouseX = (int16_t)posX;
-		userCmd.mouseY = (int16_t)posY;
 
 		if (pEvent->type == SDL_MOUSEBUTTONDOWN)
 		{
 			if (pEvent->button.button == SDL_BUTTON_LEFT)
-				userCmd.action = true;
+				m_userCmd.action = true;
 		}
 		else if (pEvent->type == SDL_MOUSEBUTTONUP)
 		{
 			if (pEvent->button.button == SDL_BUTTON_LEFT)
-				userCmd.action = false;
+				m_userCmd.action = false;
 		}
 
-		// Send camera direction
-		//userCmd.dirx = m_Camera.GetDirection().x;
-		//userCmd.diry = m_Camera.GetDirection().y;
-		//userCmd.dirz = m_Camera.GetDirection().z;
+		UpdateCamera(pEvent, &m_userCmd);
 
 		// matrices
 		float fAspectRatio = (float)width / (float)height;
@@ -190,92 +185,55 @@ void ClientGame::OnEvent(const SDL_Event* pEvent)
 			view = m_Camera.GetViewMatrix();
 		}
 
-		// Project mouse to the 
-		glm::vec2 ndc;
-		ndc.x = (2.0f * (float)posX) / (float)width -1.0f;
-		ndc.y = 1.0f - (2.0f * (float)posY) / (float)height; // flip Y
+		// Send camera direction
+		m_userCmd.dirx = m_Camera.GetDirection().x;
+		m_userCmd.diry = m_Camera.GetDirection().y;
+		m_userCmd.dirz = m_Camera.GetDirection().z;
 
-		glm::vec4 nearPointNDC(ndc, -1.0f, 1.0f);
-		glm::vec4 farPointNDC(ndc, 1.0f, 1.0f);
-
-		glm::mat4 invVP = glm::inverse(projection * view);
-		glm::vec4 nearPointWorld = invVP * nearPointNDC;
-		glm::vec4 farPointWorld = invVP * farPointNDC;
-		nearPointWorld /= nearPointWorld.w;
-		farPointWorld /= farPointWorld.w;
-
-		userCmd.posx = nearPointWorld.x;
-		userCmd.posy = nearPointWorld.y;
-		userCmd.posz = nearPointWorld.z;
-
-		glm::vec3 direction = glm::normalize(glm::vec3(farPointWorld - nearPointWorld));
-		userCmd.dirx = direction.x;
-		userCmd.diry = direction.y;
-		userCmd.dirz = direction.z;
-
-		GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
-
-		//if (pEvent->type == SDL_KEYDOWN)
-		//{
-		//	if (pEvent->key.keysym.sym == SDLK_w)
-		//		userCmd.walkForward = true;
-		//	if (pEvent->key.keysym.sym == SDLK_s)
-		//		userCmd.walkBackward = true;
-		//	if (pEvent->key.keysym.sym == SDLK_a)
-		//		userCmd.strafeLeft = true;
-		//	if (pEvent->key.keysym.sym == SDLK_d)
-		//		userCmd.strafeRight = true;
-		//}
-		//else if (pEvent->type == SDL_KEYUP)
-		//{
-		//	if (pEvent->key.keysym.sym == SDLK_w)
-		//		userCmd.walkForward = false;
-		//	if (pEvent->key.keysym.sym == SDLK_s)
-		//		userCmd.walkBackward = false;
-		//	if (pEvent->key.keysym.sym == SDLK_a)
-		//		userCmd.strafeLeft = false;
-		//	if (pEvent->key.keysym.sym == SDLK_d)
-		//		userCmd.strafeRight = false;
-		//}
-
-		//int posX = 0, posY = 0;
-		//SDL_GetMouseState(&posX, &posY);
-
-		//int width = 0, height = 0;
-		//SDL_GetWindowSize(GetEngine()->GetWindow(), &width, &height);
-
-		//int centerX = width / 2;
-		//int centerY = height / 2;
-
-		//int deltaX = posX - centerX;
-		//int deltaY = posY - centerY;
-
-		//SDL_WarpMouseInWindow(GetEngine()->GetWindow(), centerX, centerY);
-	
-		//userCmd.mouseX = (int16_t)posX;
-		//userCmd.mouseY = (int16_t)posY;
-
-		//userCmd.deltaX = (int16_t)deltaX;
-		//userCmd.deltaY = (int16_t)deltaY;
-
-		//// calculate yaw and pitch
-		//static float yaw = 0.0f, pitch = 0.0f;
-
-		//yaw += (float)deltaX * g_options_config.m_mouse_sensitive;
-		//pitch += (float)-deltaY * g_options_config.m_mouse_sensitive;
-		//if (pitch >= 89.0f)
-		//	pitch = 89.0f;
-		//else if (pitch <= -89.0f)
-		//	pitch = -89.0f;
-
-		//m_Camera.SetYawPitch(yaw, pitch);
-
-		//userCmd.dirx = m_Camera.GetDirection().x;
-		//userCmd.diry = m_Camera.GetDirection().y;
-		//userCmd.dirz = m_Camera.GetDirection().z;
-
-		//GetEngine()->GetServerGame()->SendUserCmd(&userCmd);
+		if (pEvent->type == SDL_KEYDOWN)
+		{
+			if (pEvent->key.keysym.sym == SDLK_w)
+				m_userCmd.walkForward = true;
+			if (pEvent->key.keysym.sym == SDLK_s)
+				m_userCmd.walkBackward = true;
+			if (pEvent->key.keysym.sym == SDLK_a)
+				m_userCmd.strafeLeft = true;
+			if (pEvent->key.keysym.sym == SDLK_d)
+				m_userCmd.strafeRight = true;
+		}
+		else if (pEvent->type == SDL_KEYUP)
+		{
+			if (pEvent->key.keysym.sym == SDLK_w)
+				m_userCmd.walkForward = false;
+			if (pEvent->key.keysym.sym == SDLK_s)
+				m_userCmd.walkBackward = false;
+			if (pEvent->key.keysym.sym == SDLK_a)
+				m_userCmd.strafeLeft = false;
+			if (pEvent->key.keysym.sym == SDLK_d)
+				m_userCmd.strafeRight = false;
+		}
 	}
+}
+
+void ClientGame::UpdateCamera(const SDL_Event* pEvent, UserCmd* pUserCmd)
+{
+	// calculate yaw and pitch
+	static float yaw = 0.0f, pitch = 0.0f;
+
+	if (pEvent->type == SDL_MOUSEMOTION)
+	{
+		int deltaX = pEvent->motion.xrel;
+		int deltaY = pEvent->motion.yrel;
+
+
+		yaw += deltaX * g_options_config.m_mouse_sensitive;
+		pitch -= deltaY * g_options_config.m_mouse_sensitive;
+
+		if (pitch > 89.0f) pitch = 89.0f;
+		if (pitch < -89.0f) pitch = -89.0f;
+	}
+
+	m_Camera.SetYawPitch(yaw, pitch);
 }
 
 void ClientGame::Render()
@@ -308,7 +266,7 @@ void ClientGame::Render()
 
 	g_GameUI.RenderCursor();
 
-	//RenderOverlay();
+	RenderOverlay();
 
 	ImGui::Render();
 	ImGui_ImplEngine_RenderDrawData(ImGui::GetDrawData());
@@ -321,7 +279,7 @@ void ClientGame::RenderOverlay()
 	ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
 
 	static char szBuffer[256];
-	sprintf(szBuffer, "FPS: %.2f", ImGui::GetIO().Framerate);
+	sprintf(szBuffer, "FPS: %.2f", 1.0f / GetEngine()->GetDeltaTime());
 	pDrawList->AddText(ImVec2(8.0f, height), 0xffffffff, szBuffer);
 	height += 12.0f;
 

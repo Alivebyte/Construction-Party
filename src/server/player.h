@@ -15,8 +15,7 @@ public:
 
 private:
 	glm::vec3 m_Direction;
-	glm::vec3 m_RayOrigin;
-	bool m_RayPickMode;
+	UserCmd m_userCmd;
 };
 
 #endif // !PLAYER_H
